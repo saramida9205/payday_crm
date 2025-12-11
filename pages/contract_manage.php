@@ -278,9 +278,11 @@ if (isset($_GET['edit'])) {
                             }
                             ?>
                         </td>
-                        <td><a href="customer_detail.php?id=<?php echo $contract['customer_id']; ?>"><?php echo htmlspecialchars($contract['id']); ?><br><?php echo htmlspecialchars($contract['customer_name']); ?></a></td>
+                        <td><a href="customer_detail.php?id=<?php echo $contract['customer_id']; ?>"><?php echo htmlspecialchars($contract['id']); ?><br>
+                                <font style="font-size: 14px;"><?php echo htmlspecialchars($contract['customer_name']); ?></font>
+                            </a></td>
                         <td><?php echo htmlspecialchars($contract['product_name']); ?></td>
-                        <td style="text-align: right;"><?php echo number_format($contract['loan_amount']); ?><br>
+                        <td style=" text-align: right;"><?php echo number_format($contract['loan_amount']); ?><br>
                             <font color="blue" style="font-weight: bold;" size="2"><?php echo number_format($contract['current_outstanding_principal']); ?></font>
                         </td>
                         <td><?php echo htmlspecialchars($contract['loan_date']); ?><br>-<?php echo htmlspecialchars($contract['maturity_date']); ?></td>
