@@ -1,0 +1,51 @@
+Payday Project Requirements Document
+1. Project Overview
+Project Name: Payday Loan Management System Purpose: A web-based application to manage personal loans, customer information, contracts, and collection processing. It automates interest calculations, tracks overdue status, and generates legal certificates.
+
+2. User Roles
+Administrator (Level 0): Full access to all features, including system settings, holiday management, and employee management.
+Manager/Employee (Level > 0): Access to customer and contract management, collection processing. Restricted from system-wide settings.
+3. Functional Requirements
+3.1. Customer Management
+Registration: Add new customers with personal details (Name, Resident ID, Phone, Addresses), bank info, and loan request details.
+Search: Full-text search by name or phone number.
+Management: Edit customer details or delete customers (only if no active contracts exist).
+3.2. Contract Management
+Loan Origination: Create new contracts linked to customers.
+Fields: Product Name, Loan Amount, Interest Rate, Overdue Rate, Dates (Agreement, Loan, Maturity).
+Automatic calculation of the first due date based on agreement day and holidays.
+Contract Status: Automatically tracked statuses:
+Active
+: Normal state.
+Overdue: Missed payment or past due date.
+Paid
+: Fully repaid (Principal <= 0 and Shortfall <= 100).
+Modifications: Ability to update contract terms, including rate changes (with effective dates) and due date adjustments.
+Memos: Add colored memos to contracts for internal notes. Support for "Frequent Memos".
+3.3. Collection & Payment Processing
+Payment Entry: Record payments against contracts.
+Types: Interest, Principal, Expense.
+Automatic distribution logic: Expense -> Shortfall/Interest -> Principal.
+Calculation:
+Daily interest calculation based on 365/366 days.
+Differential rates for normal vs. overdue periods.
+Automatic update of "Outstanding Principal" and "Shortfall Amount".
+Transaction Management:
+Each collection is a transaction.
+Ability to delete the last transaction (rolling back contract state).
+Bulk deletion and restoration capabilities with audit trails (deleted_at, deleted_by).
+3.4. Certificate Generation
+Templates: Manage HTML templates for various certificates (e.g., Proof of Payment, Debt Confirmation, Dunning Letter).
+Printing: Generate printable certificates with dynamic data replacement (Customer Name, Balance, Dates, etc.).
+History: Generate transaction history statements with date range filtering.
+3.5. System Management
+Holiday Management: Configure holidays and workdays.
+Default: Weekends are holidays.
+Exceptions: Mark weekends as workdays or weekdays as holidays.
+Impact: Due dates automatically skip holidays.
+Employee Management: Manage staff accounts and permissions.
+Company Info: Configure company details (Name, CEO, Address, Seal Image) used in certificates.
+4. Non-Functional Requirements
+Security: Password hashing (bcrypt), Session management, Role-based access control.
+Data Integrity: Transactional processing for payments to ensure ledger consistency.
+Performance: Efficient search for customers and contracts.

@@ -1,0 +1,1645 @@
+/* --- Payday CRM Modern UI --- */
+
+/* 1. Global Resets & Font Settings */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px;
+    background-color: #f4f7f9;
+    color: #333;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 2. Main Layout */
+.container {
+    display: flex;
+    width: 100%;
+}
+
+.sidebar {
+    width: 220px;
+    /* Optimized sidebar width */
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    transition: width 0.3s ease;
+}
+
+.main-content {
+    margin-left: 220px;
+    /* Must match sidebar width */
+    padding: 25px;
+    width: calc(100% - 220px);
+    transition: margin-left 0.3s ease;
+}
+
+.single-mode-content {
+    margin-left: 5px;
+    /* Must match sidebar width */
+    padding: 25px;
+    width: calc(100% - 30px);
+    transition: margin-left 0.3s ease;
+}
+
+/* Sidebar Header */
+.sidebar-header {
+    padding: 15px 20px;
+    background-color: #ffffff;
+    color: #000000;
+    font-weight: bold;
+    font-size: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* User Info in Sidebar */
+.user-info {
+    padding: 15px 20px;
+    border-bottom: 1px solid #3a536c;
+    text-align: center;
+}
+
+.user-info p {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    color: #ecf0f1;
+}
+
+.user-info .logout-btn {
+    display: inline-block;
+    width: 100%;
+    padding: 8px 10px;
+    background-color: #e74c3c;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.user-info .logout-btn:hover {
+    background-color: #c0392b;
+}
+
+/* 3. Sidebar Navigation */
+.sidebar ul {
+    list-style-type: none;
+    padding: 15px 0;
+}
+
+.sidebar ul li a {
+    color: #ecf0f1;
+    text-decoration: none;
+    display: block;
+    padding: 12px 20px;
+    border-left: 3px solid transparent;
+    transition: background-color 0.3s, border-left 0.3s;
+}
+
+.sidebar ul li a:hover {
+    background-color: #34495e;
+    border-left: 3px solid #3498db;
+}
+
+.sidebar ul li.active a {
+    background-color: #34495e;
+    font-weight: 600;
+    color: #fff;
+    border-left: 3px solid #3498db;
+}
+
+/* 4. Page Headers */
+h2 {
+    font-size: 1.8em;
+    color: #2c3e50;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+
+/* 5. Form Styling (Standardized) */
+.form-container,
+.search-form-container {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 8px;
+    border: 1px solid #e6e9ed;
+    margin-bottom: 25px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.search-form-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    align-items: flex-end;
+}
+
+.form-col {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 200px;
+    /* Flex grow, shrink, and basis */
+}
+
+.form-col label {
+    margin-bottom: 7px;
+    font-weight: 600;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.form-col input[type="text"],
+.form-col input[type="date"],
+.form-col input[type="number"],
+.form-col input[type="password"],
+.form-col select,
+.form-col textarea {
+    padding: 9px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    background-color: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+}
+
+.form-col input:focus,
+.form-col select:focus,
+.form-col textarea:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.search-form-buttons {
+    grid-column: 1 / -1;
+    /* Span full width */
+    text-align: right;
+    /* Align buttons to the right */
+    margin-top: 10px;
+}
+
+.search-form-buttons .btn {
+    width: 48%;
+    /* Set button width to be half of the container */
+    max-width: 150px;
+    /* Add max-width to prevent buttons from being too large */
+    display: inline-block;
+}
+
+/* 6. Button Styling (Standardized) */
+.btn {
+    padding: 9px 16px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.95em;
+    font-weight: 500;
+    text-align: center;
+    display: inline-block;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+    border-color: #3498db;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+}
+
+.btn-secondary {
+    background-color: #95a5a6;
+    color: white;
+    border-color: #95a5a6;
+}
+
+.btn-secondary:hover {
+    background-color: #7f8c8d;
+    border-color: #7f8c8d;
+}
+
+.btn-success {
+    background-color: #2ecc71;
+    color: white;
+    border-color: #2ecc71;
+}
+
+.btn-success:hover {
+    background-color: #27ae60;
+    border-color: #27ae60;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    color: white;
+    border-color: #e74c3c;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+    border-color: #c0392b;
+}
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 0.85em;
+}
+
+.btn-xs {
+    padding: 3px 8px;
+    font-size: 0.75em;
+    margin: 0 2px;
+}
+
+/* 7. Table Styling */
+.table-container {
+    overflow-x: auto;
+    background-color: #fff;
+    border: 1px solid #e6e9ed;
+    border-radius: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-container table {
+    font-size: 0.9em;
+}
+
+.table-container table.contract-list-table {
+    font-size: 0.85em;
+}
+
+table th,
+table td {
+    border-bottom: 1px solid #e6e9ed;
+    padding: 12px 15px;
+    text-align: left;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 1.05em;
+}
+
+table tr:last-child td {
+    border-bottom: none;
+}
+
+table tr:hover td {
+    background-color: #f2f5f7;
+}
+
+/* Action buttons in table */
+.action-buttons {
+    white-space: nowrap;
+}
+
+table .view_btn,
+table .add_btn,
+table .edit_btn,
+table .del_btn {
+    padding: 4px 9px;
+    font-size: 0.9em;
+    text-decoration: none;
+    border-radius: 4px;
+    color: white;
+    margin-right: 4px;
+}
+
+.view_btn {
+    background-color: #3498db;
+}
+
+.add_btn {
+    background-color: #2ecc71;
+}
+
+.edit_btn {
+    background-color: #f1c40f;
+    color: #333;
+}
+
+.del_btn {
+    background-color: #e74c3c;
+}
+
+/* 8. Messages & Notifications */
+.msg,
+.error-msg {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    color: #fff;
+    font-weight: 500;
+}
+
+.msg {
+    background-color: #2ecc71;
+}
+
+.error-msg {
+    background-color: #e74c3c;
+}
+
+.info-box {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    background-color: #d9edf7;
+    color: #31708f;
+    border: 1px solid #bce8f1;
+}
+
+/* 9. Pagination */
+.pagination {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.pagination a,
+.pagination strong {
+    margin: 0 4px;
+    padding: 8px 12px;
+    text-decoration: none;
+    border: 1px solid #d4d8dc;
+    color: #3498db;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.pagination strong {
+    background-color: #3498db;
+    color: white;
+    border-color: #3498db;
+}
+
+.pagination a:hover {
+    background-color: #f0f5f8;
+    border-color: #a2cce6;
+}
+
+/* 10. Login Page */
+.login-container {
+    max-width: 420px;
+    margin: 80px auto;
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* 11. Employee Management Form Specifics */
+.employee-form-container {
+    max-width: 450px;
+    margin-left: 0;
+    margin-right: auto;
+}
+
+/* 12. Customer & Contract Form Grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px 20px;
+    /* row-gap column-gap */
+}
+
+.customer-form-grid .form-col {
+    flex: 0 1 30%;
+    /* Do not grow, allow shrink, basis of 30% */
+}
+
+.form-grid .form-col.grid-full-width {
+    grid-column: 1 / -1;
+}
+
+/* 13. Modal Styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 25px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.close-btn {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 14. Customer Detail Page Specifics */
+.info-section-container {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    border: 1px solid #e6e9ed;
+    margin-bottom: 25px;
+}
+
+.info-section-container h4,
+.section-title {
+    font-size: 1.3em;
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-item.full-width {
+    grid-column: 1 / -1;
+}
+
+.info-item strong {
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.info-item span,
+.info-item div {
+    font-size: 1em;
+    color: #333;
+}
+
+.info-item .memo-display {
+    white-space: pre-wrap;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+    font-size: 0.95em;
+    min-height: 120px;
+    /* Increased height */
+    max-height: 250px;
+    /* Added max-height for very long memos */
+    overflow-y: auto;
+}
+
+.contract-card {
+    background: #fff;
+    border: 1px solid #e6e9ed;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    /* To contain the header background */
+}
+
+.contract-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 15px 20px;
+    border-bottom: 1px solid #e6e9ed;
+}
+
+.contract-card-header h3 {
+    margin: 0;
+    font-size: 1.4em;
+    border: none;
+    padding: 0;
+}
+
+.contract-details-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+    padding: 20px;
+}
+
+.contract-details-col h4 {
+    font-size: 1.15em;
+    color: #34495e;
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.info-grid-condensed {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 10px;
+}
+
+.info-grid-condensed .info-item {
+    flex-direction: row;
+    align-items: center;
+    grid-column: span 2;
+}
+
+.info-grid-condensed .info-item strong {
+    width: 120px;
+    margin-bottom: 0;
+}
+
+.highlight-blue {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.highlight-green {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.highlight-red {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    color: #fff;
+}
+
+.status-active {
+    background-color: #28a745;
+}
+
+.status-paid {
+    background-color: #007bff;
+}
+
+.status-defaulted {
+    background-color: #6c757d;
+}
+
+.status-overdue {
+    background-color: #dc3545;
+}
+
+/* Memo Section */
+.memo-section {
+    grid-column: 1 / -1;
+    /* Make memo section span full width */
+}
+
+.memo-list {
+    max-height: 350px;
+    overflow-y: auto;
+    padding: 5px;
+    margin-bottom: 20px;
+    border: 1px solid #e6e9ed;
+    border-radius: 4px;
+}
+
+.memo-item {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-left: 4px solid #ccc;
+    background-color: #fdfdfd;
+    position: relative;
+}
+
+.memo-item:last-child {
+    margin-bottom: 0;
+}
+
+.memo-text {
+    margin: 0 0 10px 0 !important;
+    white-space: pre-wrap;
+}
+
+.memo-meta {
+    font-size: 0.85em;
+    color: #6c757d;
+}
+
+.memo-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.memo-form-container {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.memo-form-container h5 {
+    font-size: 1.1em;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.memo-form-options {
+    margin-top: 15px;
+}
+
+.page-action-buttons {
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* 15. Daily Report Page Specifics */
+/* 업무일보 페이지 전용 스타일 */
+.report-header {
+    margin-bottom: 20px;
+}
+
+/* 조회 폼 컨테이너 */
+
+/* 채권 요약 테이블 */
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.report-table th,
+.report-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: right;
+}
+
+/* 테이블 셀 기본 스타일 */
+.report-table th {
+    background-color: #f2f2f2;
+    text-align: center;
+}
+
+/* 테이블 헤더 */
+.report-table td.category {
+    text-align: center;
+    font-weight: bold;
+}
+
+/* '구분' 셀 */
+.report-table .total-row td {
+    font-weight: bold;
+    background-color: #e9e9e9;
+}
+
+/* '비율' 행 */
+
+/* 자금 현황 리스트 */
+.report-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+/* 각 항목 */
+.report-item:last-child {
+    border-bottom: none;
+}
+
+/* 마지막 항목 밑줄 제거 */
+.report-item span {
+    font-size: 16px;
+}
+
+/* 항목 이름 */
+.report-item strong {
+    font-size: 18px;
+}
+
+/* 항목 값 */
+
+/* 16. Summary Container (for contract_manage, bond_ledger) */
+.summary-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+}
+
+.summary-item {
+    text-align: center;
+    padding: 5px 10px;
+}
+
+.summary-label {
+    font-size: 14px;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.summary-value {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.summary-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 15px;
+    border-right: 1px solid #e0e0e0;
+}
+
+.summary-group:last-child {
+    border-right: none;
+}
+
+.summary-group-title {
+    font-size: 12px;
+    font-weight: bold;
+    color: #34495e;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* 17. Summary Table (for bond_ledger) */
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: 1px solid #e6e9ed;
+    border-radius: 8px;
+}
+
+.summary-table th,
+.summary-table td {
+    padding: 12px 15px;
+    text-align: center;
+    border: 1px solid #e6e9ed;
+}
+
+.summary-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.summary-table td {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.summary-table .label-cell {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    width: 15%;
+}
+
+/* 네비게이션 */
+.tab-nav {
+    border-bottom: 2px solid #dee2e6;
+    margin-bottom: 15px;
+}
+
+.tab-nav a {
+    display: inline-block;
+    padding: 10px 15px;
+    border: 1px solid transparent;
+    border-bottom: 0;
+    margin-bottom: -2px;
+    text-decoration: none;
+    color: #495057;
+}
+
+.tab-nav a.active {
+    color: #007bff;
+    border-color: #dee2e6 #dee2e6 #fff;
+    border-radius: 0.25rem 0.25rem 0 0;
+    font-weight: bold;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.messaging-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 30px;
+}
+
+.message-list {
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.message-item {
+    border-bottom: 1px solid #eee;
+    padding: 10px 5px;
+}
+
+.message-item:last-child {
+    border-bottom: none;
+}
+
+.message-item.unread {
+    background-color: #e9f5ff;
+    font-weight: bold;
+}
+
+.message-meta {
+    font-size: 12px;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.message-text {
+    font-size: 14px;
+}
+
+.message-text a {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 25px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* --- Mobile Responsiveness (Max-width: 768px) --- */
+@media (max-width: 768px) {
+
+    /* 1. Layout Adjustments */
+    .sidebar {
+        transform: translateX(-100%);
+        /* Hide sidebar by default */
+        z-index: 1001;
+        /* Ensure it's above content */
+        width: 250px;
+        /* Slightly wider for better touch targets */
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+        /* Show sidebar when active */
+    }
+
+    .main-content {
+        margin-left: 0;
+        /* Remove margin when sidebar is hidden */
+        width: 100%;
+        padding: 15px;
+        /* Reduce padding */
+    }
+
+    /* Overlay for sidebar */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+    }
+
+    .sidebar-overlay.active {
+        display: block;
+    }
+
+    /* 2. Header & Navigation */
+    .mobile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #fff;
+        padding: 10px 15px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #e0e0e0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .hamburger-btn {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #2c3e50;
+        padding: 5px;
+    }
+
+    .mobile-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    /* 3. Form Adjustments */
+    .form-container,
+    .search-form-container {
+        padding: 15px;
+    }
+
+    .search-form-flex {
+        flex-direction: column;
+        /* Stack form items vertically */
+        gap: 15px;
+    }
+
+    .form-col {
+        flex: 1 1 100%;
+        /* Full width */
+        width: 100%;
+    }
+
+    .search-form-buttons {
+        text-align: center;
+        /* Center buttons */
+        margin-top: 15px;
+    }
+
+    .search-form-buttons .btn {
+        width: 100%;
+        /* Full width buttons */
+        max-width: none;
+        margin-bottom: 10px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        /* Single column grid */
+    }
+
+    .customer-form-grid .form-col {
+        flex: 1 1 100%;
+    }
+
+    /* 4. Table Adjustments */
+    .table-container {
+        overflow-x: auto;
+        /* Enable horizontal scroll */
+        -webkit-overflow-scrolling: touch;
+        /* Smooth scrolling on iOS */
+    }
+
+    table th,
+    table td {
+        padding: 10px;
+        /* Reduce padding */
+        font-size: 0.85em;
+        /* Smaller font */
+    }
+
+    .action-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    table .view_btn,
+    table .add_btn,
+    table .edit_btn,
+    table .del_btn {
+        padding: 6px 10px;
+        /* Larger touch targets */
+        margin-right: 0;
+        flex: 1;
+        text-align: center;
+    }
+
+    /* 5. Login Page */
+    .login-container {
+        margin: 40px 15px;
+        /* Reduce margin */
+        padding: 25px;
+        width: auto;
+        /* Auto width */
+    }
+
+    /* 6. Modal Adjustments */
+    .modal-content {
+        width: 95%;
+        /* Full width modal */
+        margin: 10% auto;
+        padding: 20px;
+    }
+
+    /* 7. Contract Card & Details */
+    .contract-details-container {
+        grid-template-columns: 1fr;
+        /* Single column */
+        padding: 15px;
+    }
+
+    .info-grid-condensed {
+        grid-template-columns: 100px 1fr;
+        /* Adjust label width */
+    }
+
+    .info-grid-condensed .info-item strong {
+        width: 100px;
+    }
+
+    /* 8. Summary Container */
+    .summary-container {
+        flex-direction: row;
+        /* Keep row but wrap */
+        flex-wrap: wrap;
+    }
+
+    .summary-group {
+        border-right: none;
+        /* Remove borders */
+        border-bottom: 1px solid #e0e0e0;
+        padding: 10px 0;
+        width: 100%;
+    }
+
+    .summary-group:last-child {
+        border-bottom: none;
+    }
+}
+
+/* 17. Sticky Footer Layout */
+.content-inner {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 50px);
+    /* Adjust based on main-content padding */
+}
+
+/* Ensure pagination pushes footer down if needed */
+.pagination {
+    margin-top: auto;
+}
+
+.info-table {
+    width: 100%;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+}
+
+.info-table td {
+    padding: 8px;
+    border: 1px solid #eee;
+}
+
+.info-table td:nth-child(odd) {
+    background-color: #f9f9f9;
+    font-weight: 600;
+    width: 12%;
+}
+
+.info-table td:nth-child(even) {
+    width: 21.33%;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.results-table th,
+.results-table td {
+    border: 1px solid #ddd;
+    padding: 6px;
+    text-align: center;
+}
+
+.results-table th {
+    background-color: #f2f2f2;
+}
+
+.results-table tfoot td {
+    font-weight: bold;
+    background-color: #f8f9fa;
+}
+
+.rate-change-row td {
+    background-color: #e9f5ff !important;
+    color: #0056b3;
+    font-weight: bold;
+    text-align: center;
+}
+
+.summary-container {
+    display: flex;
+    justify-content: space-around;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+}
+
+.summary-item {
+    text-align: center;
+}
+
+.summary-label {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.summary-value {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 25px;
+    border: 1px solid #888;
+    width: 400px;
+    height: 900px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.memo-section {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.memo-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.memo-item {
+    border-bottom: 1px solid #eee;
+    padding: 10px 5px;
+}
+
+.memo-item:last-child {
+    border-bottom: none;
+}
+
+.memo-actions {
+    float: right;
+}
+
+.memo-text {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.memo-meta {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.memo-form-container {
+    flex-shrink: 0;
+}
+
+.memo-form-options {
+    grid-template-columns: 1fr 1fr;
+}
+
+/* 공통 스타일 */
+.info-table {
+    width: 100%;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+}
+
+.info-table td {
+    padding: 8px;
+    border: 1px solid #eee;
+}
+
+.info-table td:nth-child(odd) {
+    background-color: #f9f9f9;
+    font-weight: 600;
+    width: 12%;
+}
+
+.info-table td:nth-child(even) {
+    width: 21.33%;
+}
+
+.sms-layout-container {
+    display: grid;
+    grid-template-columns: 30% 35% 35%;
+    gap: 10px;
+    align-items: start;
+}
+
+.sms-layout-column {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.sms-layout-column h3 {
+    margin-top: 0;
+}
+
+#contract-list-container {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+#preview-container {
+    margin-top: 20px;
+}
+
+.sms-template-box {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    line-height: 1.6;
+    position: relative;
+}
+
+.form-check:nth-child(odd) .form-check-label {
+    background-color: #f8f9fa;
+    /* 홀수 항목 배경색 */
+}
+
+.form-check:nth-child(even) .form-check-label {
+    background-color: #ffffff;
+    /* 짝수 항목 배경색 */
+}
+
+.form-check {
+    display: flex;
+    /* 라디오버튼과 라벨을 한 줄에 배치 */
+    align-items: center;
+    /* 수직 중앙 정렬 */
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.template-list-item {
+    white-space: normal;
+    /* 내용이 길면 줄바꿈 되도록 수정 */
+}
+
+.copy-btn {
+    margin-top: 10px;
+}
+
+.send-sms-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #007bff;
+}
+
+/* 템플릿 관리 섹션 스타일 */
+#sms-templates-container .template-buttons .btn,
+#sms-templates-container .template-buttons .btn-sm {
+    width: 100%;
+    padding: 2px 5px;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.template-edit-form textarea {
+    font-size: 16px !important;
+    height: 180px;
+}
+
+.step-card {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.step-card.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 25px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.close-button {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.template-variable {
+    color: #0056b3;
+    font-weight: bold;
+    background-color: #e7f1ff;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.95em;
+}
+
+:root {
+    --preview-padding: 30px;
+}
+
+.print-container {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+.print-controls {
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.preview-area {
+    border: 1px solid #ccc;
+    padding: var(--preview-padding);
+    min-height: 800px;
+    background-color: white;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    .preview-area,
+    .preview-area * {
+        visibility: visible;
+    }
+
+    .preview-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        border: none;
+        padding: 0;
+        /* 인쇄 시에는 여백을 프린터 설정에 맡깁니다. */
+    }
+
+    .print-controls,
+    .sidebar,
+    .main-content>.content-inner>h2,
+    .main-content>.content-inner>.alert {
+        display: none;
+    }
+}
+
+.placeholder-list {
+    font-size: 12px;
+    background-color: #e9ecef;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 20px;
+}
+
+.placeholder-list h5 {
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.placeholder-list code {
+    background-color: #fff;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+.report-container {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    width: 98%;
+}
+
+.box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.report-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.report-item:last-child {
+    border-bottom: none;
+}
+
+.report-item span {
+    font-size: 16px;
+}
+
+.report-item strong {
+    font-size: 18px;
+}
+
+.template-management-container {
+    margin-top: 30px;
+}
+
+.template-edit-box {
+    display: none;
+    margin-top: 10px;
+}
+
+.template-edit-box textarea {
+    width: 100%;
+    min-height: 200px;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+#template-edit-modal .modal-header .close-button {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #6c757d;
+    cursor: pointer;
+}
+
+#template-edit-modal .modal-header .close-button:hover {
+    color: #000;
+}
+
+#template-edit-modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#template-edit-modal .modal-content {
+    max-width: 900px;
+}
+
+/* 모달 너비 확장 */
+#template-edit-modal .modal-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.note-editor.note-frame {
+    border-radius: 5px;
+}
+
+/* 에디터 스타일 개선 */
+#template-edit-modal .modal-footer {
+    text-align: right;
+    margin-top: 15px;
+}

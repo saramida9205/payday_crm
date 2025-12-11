@@ -1,0 +1,148 @@
+Payday Project Technical Specification
+1. System Architecture
+Backend: PHP (Native/Vanilla)
+Database: MySQL / MariaDB
+Frontend: HTML5, CSS3, JavaScript (Vanilla + jQuery for AJAX/UI)
+Server: Apache/Nginx (Standard PHP environment)
+2. Database Schema
+2.1. employees
+Stores system user accounts.
+
+id
+ (INT, PK, AI)
+username (VARCHAR, Unique)
+password (VARCHAR, Hashed)
+name (VARCHAR)
+permission_level (INT): 0 = Admin, 1+ = Manager/Staff
+2.2. customers
+Stores borrower information.
+
+id
+ (INT, PK, AI)
+name (VARCHAR)
+resident_id_partial (VARCHAR): Partial ID for privacy (e.g., YYMMDD-1******)
+phone (VARCHAR)
+address_registered (VARCHAR)
+address_actual (VARCHAR)
+bank_name (VARCHAR)
+account_number (VARCHAR)
+memo (TEXT)
+created_at (DATETIME)
+Index: FULLTEXT(name, phone) for fast search.
+2.3. contracts
+Stores loan agreements.
+
+id
+ (INT, PK, AI)
+customer_id (INT, FK -> customers.id)
+product_name (VARCHAR)
+loan_amount (DECIMAL)
+current_outstanding_principal (DECIMAL): Updated on every collection.
+shortfall_amount (DECIMAL): Unpaid interest/fees carried forward.
+interest_rate (DECIMAL): Annual interest rate (%).
+overdue_interest_rate (DECIMAL): Annual overdue rate (%).
+loan_date (DATE)
+maturity_date (DATE)
+agreement_date (INT): Day of month for due dates (e.g., 25).
+next_due_date
+ (DATE): Calculated next payment date.
+last_interest_calc_date (DATE): Date up to which interest has been calculated.
+status
+ (ENUM): 'active', 'overdue', 'paid', 'defaulted'.
+rate_change_date (DATE, Nullable): Date when interest rate changes.
+new_interest_rate (DECIMAL, Nullable)
+new_overdue_rate (DECIMAL, Nullable)
+2.4. collections
+Stores payment transactions.
+
+id
+ (INT, PK, AI)
+transaction_id (VARCHAR): Unique ID grouping related entries (e.g., split payment).
+contract_id (INT, FK -> contracts.id)
+collection_date (DATE)
+collection_type (VARCHAR): '이자' (Interest), '원금' (Principal), '경비' (Expense).
+amount (DECIMAL)
+memo (TEXT)
+generated_interest (DECIMAL): Interest accrued at the time of this collection.
+deleted_at (DATETIME, Nullable)
+deleted_by (VARCHAR, Nullable)
+2.5. contract_state_backups
+Stores snapshots of contract state before transactions for rollback.
+
+id
+ (INT, PK, AI)
+contract_id (INT)
+collection_transaction_id (VARCHAR)
+status
+ (VARCHAR)
+current_outstanding_principal (DECIMAL)
+shortfall_amount (DECIMAL)
+next_due_date
+ (DATE)
+last_interest_calc_date (DATE)
+2.6. holidays
+Stores holiday exceptions.
+
+holiday_date (DATE, PK)
+type (ENUM): 'holiday', 'workday'
+description (VARCHAR)
+2.7. 
+certificate_templates
+Stores HTML templates for certificates.
+
+template_key (VARCHAR, PK)
+title
+ (VARCHAR)
+content (MEDIUMTEXT)
+2.8. 
+company_info
+Stores key-value pairs for company settings.
+
+info_key (VARCHAR, PK)
+info_value (TEXT)
+3. Key Algorithms & Logic
+3.1. Interest Calculation (
+calculateAccruedInterest
+)
+Formula: Principal * Rate * Days / 365 (or 366)
+Logic:
+Iterate day by day from last_interest_calc_date to collection_date.
+Check if current date >= rate_change_date to apply new rates.
+Check if current date >= 
+next_due_date
+ (Grace period logic).
+If overdue: Apply overdue_interest_rate for the penalty portion.
+If normal: Apply interest_rate.
+Sum up daily interest.
+3.2. Payment Processing (
+process_collection
+)
+Validation: Ensure collection_date > last transaction date.
+Backup: Save current contract state to contract_state_backups.
+Insert Records: Insert collections rows (Expense, Interest, Principal) with a shared transaction_id.
+Update Contract:
+Deduct Principal from current_outstanding_principal.
+Update shortfall_amount (Add accrued interest, subtract paid interest).
+Update last_interest_calc_date to collection_date.
+Recalculate 
+next_due_date
+ (Skip holidays).
+Update 
+status
+ (Check if fully paid or overdue).
+3.3. Holiday Logic (
+get_next_due_date
+)
+Start with target month's agreement_date.
+Check if it falls on a weekend or a date in holidays table with type 'holiday'.
+If yes, move to next day.
+Repeat until a valid workday is found.
+Check for 'workday' exceptions in holidays table (e.g., working weekend).
+4. API & Interfaces
+AJAX Endpoints: Most logic resides in process/*.php files which return JSON.
+process/collection_process.php
+: Handle calculations and saves.
+process/certificate_process.php
+: Generate certificate HTML.
+process/holiday_process.php
+: Toggle holiday status.

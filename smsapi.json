@@ -1,0 +1,722 @@
+{
+	"info": {
+		"_postman_id": "f87dd867-24ef-4e63-bb2c-5a9caf58cfbe",
+		"name": "GW_발송API_test_제공_202508",
+		"description": "GW_API_test_20210601",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "8016817"
+	},
+	"item": [
+		{
+			"name": "메세지발송",
+			"item": [
+				{
+					"name": "SMS발송",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"name": "Content-Type",
+								"type": "text"
+							},
+							{
+								"key": "sejongApiKey",
+								"value": "제공받은key",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "callback",
+									"value": "16882200",
+									"description": "발신번호 (개발기는 16882200으로 고정)",
+									"type": "text"
+								},
+								{
+									"key": "contents",
+									"value": "SMS API테스트 발송 0004",
+									"description": "메시지 내용 (90byte)",
+									"type": "text"
+								},
+								{
+									"key": "receiverTelNo",
+									"value": "01000000000",
+									"description": "수신번호 (개발기에서는 끝자리에 따라 '결과조회 API' 에서 개별 결과코드 리턴)",
+									"type": "text"
+								},
+								{
+									"key": "userKey",
+									"value": "123e4567e89b",
+									"description": "메시지별 유일한 시리얼 넘버(결과확인시까지 유일)",
+									"type": "text"
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": "https://apimsg-dev.wideshot.co.kr/api/v1/message/sms",
+						"description": "SMS발송"
+					},
+					"response": []
+				},
+				{
+					"name": "ISMS(국제)발송",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "sejongApiKey",
+								"value": "제공받은key",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "callback",
+									"value": "16882200",
+									"description": "발신번호 (개발기는 16882200으로 고정)",
+									"type": "text"
+								},
+								{
+									"key": "contents",
+									"value": "국제SMS API테스트 발송",
+									"description": "메시지 내용 (inputMode에 따라 상이)",
+									"type": "text"
+								},
+								{
+									"key": "receiverTelNo",
+									"value": "821000000000",
+									"description": "수신번호 (국가번호로 시작)",
+									"type": "text"
+								},
+								{
+									"key": "inputMode",
+									"value": "",
+									"description": "캐릭터 입력 모드(ASCII/ETC(기본))",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "userKey",
+									"value": "123e4567e89b",
+									"description": "메시지별 유일한 시리얼 넘버(결과확인시까지 유일)",
+									"type": "text"
+								}
+							]
+						},
+						"url": "https://apimsg-dev.wideshot.co.kr/api/v1/message/isms",
+						"description": "SMS발송"
+					},
+					"response": []
+				},
+				{
+					"name": "LMS발송",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "sejongApiKey",
+								"value": "제공받은key",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "callback",
+									"value": "16882200",
+									"description": "발신번호 (개발기는 16882200으로 고정)",
+									"type": "text"
+								},
+								{
+									"key": "contents",
+									"value": "LMS API테스트 발송",
+									"description": "메시지 내용 (2000byte)",
+									"type": "text"
+								},
+								{
+									"key": "receiverTelNo",
+									"value": "01000000000",
+									"description": "수신번호 (개발기에서는 끝자리에 따라 '결과조회 API' 에서 개별 결과코드 리턴)",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "LMS발송",
+									"description": "미포함시 \"제목없음\" 으로 수신 (최대 50byte)",
+									"type": "text"
+								},
+								{
+									"key": "userKey",
+									"value": "123e4567e89b",
+									"description": "메시지별 유일한 시리얼 넘버(결과확인시까지 유일)",
+									"type": "text"
+								}
+							]
+						},
+						"url": "https://apimsg-dev.wideshot.co.kr/api/v1/message/lms",
+						"description": "SMS발송"
+					},
+					"response": []
+				},
+				{
+					"name": "MMS발송",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "sejongApiKey",
+								"value": "제공받은key",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "callback",
+									"value": "16882200",
+									"description": "발신번호 (개발기는 16882200으로 고정)",
+									"type": "text"
+								},
+								{
+									"key": "contents",
+									"value": "MMS API테스트 발송",
+									"description": "메시지 내용 (2000byte)",
+									"type": "text"
+								},
+								{
+									"key": "receiverTelNo",
+									"value": "01000000000",
+									"description": "수신번호 (개발기에서는 끝자리에 따라 '결과조회 API' 에서 개별 결과코드 리턴)",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "MMS발송",
+									"description": "미포함시 \"제목없음\" 으로 수신",
+									"type": "text"
+								},
+								{
+									"key": "imageFile1",
+									"description": "멀티미디어 파일 1",
+									"type": "file",
+									"src": "/C:/Users/youngmin/Downloads/croppedImage.jpg"
+								},
+								{
+									"key": "imageFile2",
+									"description": "멀티미디어 파일 2",
+									"type": "file",
+									"src": "/C:/Users/youngmin/Downloads/croppedImage.jpg"
+								},
+								{
+									"key": "imageFile3",
+									"description": "멀티미디어 파일 3",
+									"type": "file",
+									"src": "/C:/Users/youngmin/Downloads/croppedImage.jpg"
+								},
+								{
+									"key": "userKey",
+									"value": "123e4567e89b",
+									"description": "메시지별 유일한 시리얼 넘버(결과확인시까지 유일)",
+									"type": "text"
+								}
+							]
+						},
+						"url": "https://apimsg-dev.wideshot.co.kr/api/v1/message/mms",
+						"description": "SMS발송"
+					},
+					"response": []
+				},
+				{
+					"name": "알림톡발송v3",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "sejongApiKey",
+								"value": "제공받은key",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "senderKey",
+									"value": "abcd1234abcd1234abcd1234abcd1234abcd1234",
+									"description": "개발기는 임의의 영/소문자 40자로 시험 (운영기에서는 카카오톡 채널 등록시 발급됨)",
+									"type": "text"
+								},
+								{
+									"key": "templateCode",
+									"value": "SJB_102055",
+									"description": "개발기는 임의의 영/소문자 10자로 시험 (운영기에서 템플릿 등록시 자동 발급됨)",
+									"type": "text"
+								},
+								{
+									"key": "contents",
+									"value": "알림톡 테스트입니다. 변수의 실제 값을 포함하여 완전한 문장으로 전송합니다.",
+									"description": "변수 내용과 띄어쓰기를 모두 포함해 기본형 1000자, 기타 유형(채널추가/부가/복합형)은 모든 내용 포함 1000자",
+									"type": "text"
+								},
+								{
+									"key": "receiverTelNo",
+									"value": "01000000000",
+									"description": "수신번호 (개발기에서는 끝자리에 따라 '결과조회 API' 에서 개별 결과코드 리턴)",
+									"type": "text"
+								},
+								{
+									"key": "userKey",
+									"value": "123e4567e89b",
+									"description": "메시지별 유일한 시리얼 넘버(결과확인시까지 유일)",
+									"type": "text"
+								},
+								{
+									"key": "messageType",
+									"value": "AT",
+									"description": "AT : 알림톡텍스트, AI : 알림톡이미지",
+									"type": "text"
+								},
+								{
+									"key": "attachment",
+									"value": "{\n    \"attachment\":{\n        \"button\":[\n            {\n                \"name\":\"웹링크버튼\",\n                \"type\":\"WL\",\n                \"url_mobile\":\"https://naver.com\",\n                \"url_pc\":\"https://daum.net\"\n            },\n            {\n                \"name\":\"앱링크버튼\",\n                \"type\":\"AL\",\n                \"scheme_ios\":\"iosapp://dumpurl\",\n                \"scheme_android\":\"andapp://dumpurl\"\n            },\n            {\n                \"name\":\"배송 조회하기\",\n                \"type\":\"DS\"\n            }\n        ]\n    }\n}",
+									"description": "템플릿에 버튼이 있는 경우 버튼을 json 형식으로 정의",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "10,000원",
+									"description": "템플릿 유형을 강조표기형으로 사용시 강조 표기할 내용",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "resendType",
+									"value": "LMS",
+									"description": "알림톡 실패시 대체 문자 유형 (미사용시 아래 관련 항목과 함께 미전송, SMS/LMS/MMS), 메시지 내용은 contents 를 그대로 재전송 (별도 정의 불가하여, SMS 재처리시에는 길이에 주의)",
+									"type": "text"
+								},
+								{
+									"key": "resendCallback",
+									"value": "16882200",
+									"description": "알림톡 실패 대체 문제 발송시 발신번호 (사전 등록 필수, 개발기는 16882200)",
+									"type": "text"
+								},
+								{
+									"key": "resendTitle",
+									"value": "대체 발송시 LMS제목",
+									"description": "대체 발송시 LMS제목 (최대 50byte)",
+									"type": "text"
+								},
+								{
+									"key": "resendContents",
+									"value": "대체 발송시 내용",
+									"description": "대체 발송시 메시지 내용 (resendType 별 제한 길이 주의)",
+									"type": "text"
+								},
+								{
+									"key": "resendImgUrl",
+									"value": "https://mdu-kage.kakao.com/dn/..../.../...jpg",
+									"description": "알림톡 실패 MMS 대체 문자 발송시 포함할 이미지(이미지형 템플릿의 이미지 URL만 사용 가능)",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": "https://apimsg-dev.wideshot.co.kr/api/v3/message/alimtalk",
+						"description": "SMS발송"
+					},
+					"response": []
+				},
+				{
+					"name": "친구톡발송v3",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "sejongApiKey",
+								"value": "제공받은key",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "senderKey",
+									"value": "abcd1234abcd1234abcd1234abcd1234abcd1234",
+									"description": "개발기는 임의의 영/소문자 40자로 시험 (운영기에서는 카카오톡 채널 등록시 발급됨)",
+									"type": "text"
+								},
+								{
+									"key": "contents",
+									"value": "[카카오쇼핑] 방송 알림 안내\n홍길동 고객님! 신청하신 상품의 방송 일정 안내 드립니다.\n\n방송 일자 : 2020.10.01\n방송 시간 : 오전 10:00\n상품명 : 최고급 세탁기\n\n※ 방송 예정 일시는 상품이 편성된 프로그램 시간 기준으로, 여러 상품을 방송하는 프로그램의 경우 실제 방송과 시간 차이가 발생할 수 있습니다.",
+									"description": "변수 내용과 띄어쓰기를 모두 포함해 텍스트형 1000자, 이미지형 400자, 와이드이미지형 76자",
+									"type": "text"
+								},
+								{
+									"key": "receiverTelNo",
+									"value": "01000000000",
+									"description": "수신번호 (개발기에서는 끝자리에 따라 '결과조회 API' 에서 개별 결과코드 리턴)",
+									"type": "text"
+								},
+								{
+									"key": "userKey",
+									"value": "123e4567e89b",
+									"description": "메시지별 유일한 시리얼 넘버(결과확인시까지 유일)",
+									"type": "text"
+								},
+								{
+									"key": "messageType",
+									"value": "FI",
+									"description": "FT : 친구톡텍스트, FI : 친구톡이미지, FW : 친구톡와이드이미지",
+									"type": "text"
+								},
+								{
+									"key": "advertisementYn",
+									"value": "Y",
+									"description": "광고 여부 (광고 : Y, 비광고 : N(기본))",
+									"type": "text"
+								},
+								{
+									"key": "friendtalkImage",
+									"description": "친구톡 이미지/와이드이미지 발송시 로컬 파일 첨부 (규격 주의)",
+									"type": "file",
+									"src": "/D:/mario.jpg"
+								},
+								{
+									"key": "attachment",
+									"value": "{\n    \"attachment\":{\n        \"button\":[\n            {\n                \"name\":\"웹버튼0\",\n                \"type\":\"WL\",\n                \"url_mobile\":\"https://naver.com\",\n                \"url_pc\":\"https://daum.net\"\n            },\n            {\n                \"name\":\"앱버튼0\",\n                \"type\":\"AL\",\n                \"scheme_ios\":\"iosapp://dumpurl\",\n                \"scheme_android\":\"andapp://dumpurl\"\n            }\n        ],\n        \"image\": {\n            \"img_url\":  \"%s\",\n            \"img_link\": \"http://bizmessage.kakao.com/\"\n        }\n    }\n}",
+									"description": "버튼을 정의, 친구톡 이미지/와이드이미지 발송시 이미지링크 URL 정의",
+									"type": "text"
+								},
+								{
+									"key": "resendType",
+									"value": "MMS",
+									"description": "친구톡 실패시 대체 문자 유형 (미사용시 아래 관련 항목과 함께 미전송, SMS/LMS/MMS), 메시지 내용은 contents 를 그대로 재전송 (별도 정의 불가하여, SMS 재처리시에는 길이에 주의)",
+									"type": "text"
+								},
+								{
+									"key": "resendCallback",
+									"value": "16882200",
+									"description": "친톡 실패 대체 문제 발송시 발신번호 (사전 등록 필수, 개발기는 16882200)",
+									"type": "text"
+								},
+								{
+									"key": "resendTitle",
+									"value": "대체 발송시 LMS/MMS 제목",
+									"description": "대체 발송시 LMS/MMS 제목 (최대 50byte)",
+									"type": "text"
+								},
+								{
+									"key": "resendContents",
+									"value": "대체 발송시 내용",
+									"description": "대체 발송시 메시지 내용 (resendType 별 제한 길이 주의)",
+									"type": "text"
+								}
+							]
+						},
+						"url": "https://apimsg-dev.wideshot.co.kr/api/v3/message/friendtalk",
+						"description": "SMS발송"
+					},
+					"response": []
+				},
+				{
+					"name": "RCS발송",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "sejongApiKey",
+								"value": "제공받은key",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "UserKey",
+									"value": "123e4567e89b",
+									"description": "메시지별 유일한 시리얼 넘버(결과조회시까지 유일)",
+									"type": "text"
+								},
+								{
+									"key": "receiverTelNo",
+									"value": "01000000004",
+									"description": "수신번호 (개발기에서는 끝자리에 따라 '결과조회 API' 에서 개별 결과코드 리턴)",
+									"type": "text"
+								},
+								{
+									"key": "chatbotId",
+									"value": "16882200",
+									"description": "RCS 비즈 센타에 등록한 발신번호",
+									"type": "text"
+								},
+								{
+									"key": "header",
+									"value": "1",
+									"description": "메시지상단 식별문구 (0: web 발송, 1: 광고)",
+									"type": "text"
+								},
+								{
+									"key": "footer",
+									"value": "0800000000",
+									"description": "무료수신거부 번호 삽입 필요시 사용",
+									"type": "text"
+								},
+								{
+									"key": "copyAllowed",
+									"value": "Y",
+									"description": "허용: Y, 비허용: N",
+									"type": "text"
+								},
+								{
+									"key": "resendType",
+									"value": "SMS",
+									"description": "RCS 실패후 문자 재발송시의 메시지 유형, 미사용시 아래 대체발송 관련 파라미터 모두 미전송",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "resendCallback",
+									"value": "16882200",
+									"description": "RCS 실패 후 문자 재발송시의 발신번호",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "title",
+									"value": "RCS 테스트(실패로 문자발송)",
+									"description": "RCS 실패 후 문자 재발송시의 LMS/MMS 제목",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "resendContents",
+									"value": "RCS 실패로 문자 재발송 내용입니다.",
+									"description": "RCS 실패 후 문자 재발송시의 메시지 내용\n(SMS 90byte, LMS/MMS 2000byte)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "resendImage",
+									"description": "RCS 실패 후 MMS 재발송시 첨부할 이미지",
+									"type": "file",
+									"src": "/D:/agent/image.jpg",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "----------------------",
+									"description": "아래 부터는 메시지 유형별로 messagebaseId 와 r_json 두 개씩 묶어 시험합니다.",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "messagebaseId",
+									"value": "SS000000",
+									"description": "SMS (메시지 유형 코드)",
+									"type": "text"
+								},
+								{
+									"key": "r_json",
+									"value": "{\"message\": {\"description\": \"RCS SMS는한글 기준 100자까지 이용 가능하며 버튼은 한개, 미디어는 불가능합니다. 이 메시지 블록 하나가 카드 하나입니다.\"}}",
+									"description": "SMS (제목/내용/버튼 등 전체를  json 형식으로 정의)",
+									"type": "text"
+								},
+								{
+									"key": "messagebaseId",
+									"value": "SL000000",
+									"description": "LMS (메시지 유형 코드)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "r_json",
+									"value": "{\"message\": {\n\"title\": \"RCS LMS제목입니다\",\n\"description\": \"RCS LMS는 한글 기준 1300자까지 이용 가능하며 버튼은 세 개까지 이용가능하다는 차이점이 있습니다. SMS 유형과 마찬가지로 미디어는 불가능합니다. 타이틀은 30자, 버튼명은 17자까지 가능합니다.\"},\n\"button\": [{\n\"suggestions\": [{\n\"action\": {\n\"urlAction\": {\n\"openUrl\": {\n\"url\": \"https://www.sejongtelecom.net/\"\n}\n},\n\"displayText\": \"세종텔레콤 바로가기\"\n}\n},\n{\n\"action\": {\n\"mapAction\": {\n\"requestLocationPush\": {}\n},\n\"displayText\": \"현재위치 공유하기\"\n}\n},\n{\n\"action\": {\n\"clipboardAction\": {\n\"copyToClipboard\": {\n\"text\": \"복사 할 내용\"\n}\n},\n\"displayText\": \"복사하기\"\n}\n}]\n}]\n}",
+									"description": "LMS (제목/내용/버튼 등 전체를  json 형식으로 정의)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "messagebaseId",
+									"value": "SMwThT00",
+									"description": "MMS_Tall (메시지 유형 코드)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "r_json",
+									"value": "{\"message\": {\n\"title\": \"RCS mms발송 타이틀입니다.\",\n\"description\": \"MMS 는 카드로 나뉘어져있으며 SMwThT00과\nSMwThM00은 카드를 최대 한장까지 버튼은 최대 두장까지 사용가능하며 본문 길이\n글자수는 1300자까지 사용 가능합니다. 특별하게 미디어까지 사용가능합니다. 미디\n어는 사전등록하여야 하며 경로 식의 구성으로 이루어져 있습니다.\",\n\"media\": \"maapfile://sj23090708363717298\"\n},\n\"button\": [{\n\"suggestions\": [{\n\"action\": {\n\"urlAction\": {\n\"openUrl\": {\n\"url\": \"https://www.sejongtelecom.net/\"\n}\n},\n\"displayText\": \"세종텔레콤 바로가기\"\n}\n},\n{\n\"action\": {\n\"dialerAction\": {\n\"dialPhoneNumber\": {\n\"phoneNumber\": \"16881000\"\n}\n},\n\"displayText\": \"담당자 전화 걸기\"\n}\n}]\n}]\n}",
+									"description": "MMS_Tall (제목/내용/버튼 등 전체를  json 형식으로 정의)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "messagebaseId",
+									"value": "CMwMhM0300",
+									"description": "MMS_multi_Medium_3장 (메시지 유형 코드)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "r_json",
+									"value": "{\"message\": {\n\"title1\": \"CmwMhM0300 첫번째 타이틀입니다.\",\n\"description1\": \"카드가 추가되는 MMS이며 맨 끝의 숫자가 0300, 0400, 0500 이런식으로 이루어져있습니다. 이는 카드 장수를 의미합니다. 0300은 3장 0400은 4장 최대 6장(0600)까지 가능합니다. 버튼을 넣으실땐 displayText가 필수로 존재해야 하며 이 부분이 빠져있을 경우 실제 발송처리되는 사업자측에서에러를 내보낼 수 있습니다.\",\n\"media1\": \"maapfile://sj23090708265583372\",\n\"title2\": \"CmwMhM0300 두번째 타이틀입니다.\",\n\"description2\": \"카드갯수는 최대가 아닌 필수적으로 사용해야 할 장수를 의미하며 6장을 선택하였다면 6장의 카드 내용을 채워야 합니다. 미디어는 필수가 아닙니다.\",\n\"media2\": \"maapfile://sj23090708272189107\",\n\"description3\": \"세번째 카드입니다.\",\n\"media3\": \"maapfile://sj23090708273158856\"\n},\n\"button\": [{\n\"suggestions\": [{\n\"action\": {\n\"urlAction\": {\n\"openUrl\": {\n\"url\": \"https://www.sejongtelecom.net/\"\n}\n},\n\"displayText\": \"세종텔레콤 바로가기\"\n}\n},\n{\n\"action\": {\n\"composeAction\": {\n\"composeTextMessage\": {\n\"phoneNumber\": \"16881000\",\n\"text\": \"전달할 내용 1\"\n}\n},\n\"displayText\": \"담당자 문자 보내기\"\n}\n}]\n},\n{\n\"suggestions\": [{\n\"action\": {\n\"urlAction\": {\n\"openUrl\": {\n\"url\": \"https://www.sejongtelecom.net/\"\n}\n},\n\"displayText\": \"세종텔레콤 바로가기\"\n}\n},\n{\n\"action\": {\n\"composeAction\": {\n\"composeTextMessage\": {\n\"phoneNumber\": \"16881000\",\n\"text\": \"전달할 내용 2\"\n}\n},\n\"displayText\": \"담당자 문자 보내기\"\n}\n}]\n},\n{\n\"suggestions\": [{\n\"action\": {\n\"urlAction\": {\n\"openUrl\": {\n\"url\": \"https://www.sejongtelecom.net/\"\n}\n},\n\"displayText\": \"세종텔레콤 바로가기\"\n}\n},\n{\n\"action\": {\n\"composeAction\": {\n\"composeTextMessage\": {\n\"phoneNumber\": \"16881000\",\n\"text\": \"전달할 내용 3\"\n}\n},\n\"displayText\": \"담당자 문자 보내기\"\n}\n}]\n}]\n}",
+									"description": "MMS_multi_Medium_3장 (제목/내용/버튼 등 전체를  json 형식으로 정의)",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": "https://apimsg-dev.wideshot.co.kr/api/v1/message/rcs",
+						"description": "SMS발송"
+					},
+					"response": []
+				},
+				{
+					"name": "발송결과조회_개별v3",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "sejongApiKey",
+								"value": "제공받은key",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "https://apimsg-dev.wideshot.co.kr/api/v3/message/result?sendCode=002",
+							"protocol": "https",
+							"host": [
+								"apimsg-dev",
+								"wideshot",
+								"co",
+								"kr"
+							],
+							"path": [
+								"api",
+								"v3",
+								"message",
+								"result"
+							],
+							"query": [
+								{
+									"key": "sendCode",
+									"value": "002",
+									"description": "userKey 에 해당"
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "발송결과조회"
+					},
+					"response": []
+				},
+				{
+					"name": "발송결과조회_all v3",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "sejongApiKey",
+								"value": "제공받은key",
+								"type": "text"
+							}
+						],
+						"url": "https://apimsg-dev.wideshot.co.kr/api/v3/message/results",
+						"description": "발송결과조회"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
