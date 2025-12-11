@@ -39,6 +39,7 @@ sort($banks);
 
 <div style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
     <span>총 고객: <?php echo number_format($total_records); ?>명</span>
+    <button type="button" class="btn btn-primary" onclick="toggleCustomerForm()">고객 등록</button>
 </div>
 
 <?php if (isset($_SESSION['message'])): ?>
@@ -131,7 +132,7 @@ sort($banks);
 <hr style="margin: 30px 0;">
 
 <!-- Add/Edit Customer Form -->
-<div id="customer_form" class="form-container">
+<div id="customer_form" class="form-container" style="display: <?php echo $update ? 'block' : 'none'; ?>;">
     <h3><?php echo $update ? '고객 정보 수정' : '신규 고객 추가'; ?></h3>
     <form method="post" action="../process/customer_process.php">
         <input type="hidden" name="id" value="<?php echo $id; ?>">
@@ -162,7 +163,7 @@ sort($banks);
             </div>
             <div class="form-col">
                 <label>입금은행</label>
-                <input list="banks" name="bank_name" value="<?php echo htmlspecialchars($bank_name ?? ''); ?>">
+                <input style="height: 38px;" list="banks" name="bank_name" value="<?php echo htmlspecialchars($bank_name ?? ''); ?>">
                 <datalist id="banks"><?php foreach ($banks as $bank): ?><option value="<?php echo $bank; ?>"><?php endforeach; ?></datalist>
             </div>
             <div class="form-col">
@@ -256,6 +257,18 @@ sort($banks);
         var fullMemo = cell.querySelector('.memo-full').innerHTML;
         document.getElementById('memoModalContent').innerHTML = fullMemo;
         modal.style.display = "block";
+    }
+
+    function toggleCustomerForm() {
+        var form = document.getElementById('customer_form');
+        if (form.style.display === 'none' || form.style.display === '') {
+            form.style.display = 'block';
+            form.scrollIntoView({
+                behavior: 'smooth'
+            });
+        } else {
+            form.style.display = 'none';
+        }
     }
 </script>
 
