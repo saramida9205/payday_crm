@@ -1,9 +1,10 @@
 <?php
 require_once __DIR__ . '/../common.php';
 
-function getContracts($link, $search_params) {
+function getContracts($link, $search_params)
+{
     $base_sql = "FROM contracts c JOIN customers cu ON c.customer_id = cu.id";
-    
+
     $where_clauses = [];
     $params = [];
     $types = '';
@@ -55,7 +56,7 @@ function getContracts($link, $search_params) {
         // Ensure codes are integers to prevent SQL injection
         $codes = array_map('intval', $codes);
         $codes_str = implode(',', $codes);
-        
+
         $logic = $search_params['classification_logic'] ?? 'OR'; // OR, AND, EXCLUDE
 
         if ($logic === 'EXCLUDE') {
@@ -98,10 +99,10 @@ function getContracts($link, $search_params) {
     // 기본 정렬을 대출일 내림차순으로 설정
     $order_by_clause = $sort_map[$search_params['sort']] ?? 'c.loan_date DESC';
 
-    $data_sql = "SELECT c.*, cu.name as customer_name, cu.phone, (SELECT MAX(collection_date) FROM collections WHERE contract_id = c.id AND deleted_at IS NULL) as last_collection_date " 
-              . $base_sql 
-              . $where_sql 
-              . " ORDER BY " . $order_by_clause;
+    $data_sql = "SELECT c.*, cu.name as customer_name, cu.phone, (SELECT MAX(collection_date) FROM collections WHERE contract_id = c.id AND deleted_at IS NULL) as last_collection_date "
+        . $base_sql
+        . $where_sql
+        . " ORDER BY " . $order_by_clause;
     $data_params = $params;
     $data_types = $types;
 
@@ -120,7 +121,7 @@ function getContracts($link, $search_params) {
     $result = mysqli_stmt_get_result($stmt_data);
     $contracts = mysqli_fetch_all($result, MYSQLI_ASSOC);
     mysqli_stmt_close($stmt_data);
-    
+
     // Calculate summary data for all filtered contracts (not just paginated)
     $summary_sql = "SELECT 
                         SUM(c.loan_amount) as total_loan_amount,
@@ -135,7 +136,7 @@ function getContracts($link, $search_params) {
     mysqli_stmt_execute($stmt_summary);
     $summary_data = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_summary));
     mysqli_stmt_close($stmt_summary);
-    
+
     // 예상 이자는 여전히 개별 계산이 필요합니다.
     $all_filtered_contracts_sql = "SELECT c.id, c.interest_rate, c.overdue_interest_rate, c.next_due_date, c.last_interest_calc_date, c.loan_date, c.current_outstanding_principal " . $base_sql . $where_sql;
     $stmt_all_contracts = mysqli_prepare($link, $all_filtered_contracts_sql);
@@ -155,16 +156,7 @@ function getContracts($link, $search_params) {
     return array_merge(['data' => $contracts, 'total' => $total_records, 'total_expected_interest' => $total_expected_interest], $summary_data);
 }
 
-function getContractById($link, $id) {
-    $sql = "SELECT * FROM contracts WHERE id = ?";
-    $stmt = mysqli_prepare($link, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $id);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    $contract = mysqli_fetch_assoc($result);
-    mysqli_stmt_close($stmt);
-    return $contract;
-}
+
 
 // --- SAVE NEW CONTRACT ---
 if (isset($_POST['save'])) {
@@ -188,11 +180,23 @@ if (isset($_POST['save'])) {
 
     $sql = "INSERT INTO contracts (customer_id, product_name, agreement_date, loan_amount, current_outstanding_principal, loan_date, maturity_date, interest_rate, overdue_interest_rate, status, next_due_date, deferred_agreement_amount) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    
+
     $stmt = mysqli_prepare($link, $sql);
-    mysqli_stmt_bind_param($stmt, "isisdssddssd", 
-        $customer_id, $product_name, $agreement_date, $loan_amount, $loan_amount, $loan_date, 
-        $maturity_date, $interest_rate, $overdue_interest_rate, $status, $next_due_date, $deferred_agreement_amount
+    mysqli_stmt_bind_param(
+        $stmt,
+        "isisdssddssd",
+        $customer_id,
+        $product_name,
+        $agreement_date,
+        $loan_amount,
+        $loan_amount,
+        $loan_date,
+        $maturity_date,
+        $interest_rate,
+        $overdue_interest_rate,
+        $status,
+        $next_due_date,
+        $deferred_agreement_amount
     );
 
     if (mysqli_stmt_execute($stmt)) {
@@ -242,10 +246,23 @@ if (isset($_POST['update'])) {
             WHERE id = ?";
 
     $stmt = mysqli_prepare($link, $sql);
-    mysqli_stmt_bind_param($stmt, "ssisssdsddssdi", 
-        $product_name, $agreement_date, $loan_amount, $loan_date, $maturity_date, 
-        $interest_rate, $overdue_interest_rate, $status, $rate_change_date, 
-        $new_interest_rate, $new_overdue_rate, $next_due_date, $deferred_agreement_amount, $id
+    mysqli_stmt_bind_param(
+        $stmt,
+        "ssisssdsddssdi",
+        $product_name,
+        $agreement_date,
+        $loan_amount,
+        $loan_date,
+        $maturity_date,
+        $interest_rate,
+        $overdue_interest_rate,
+        $status,
+        $rate_change_date,
+        $new_interest_rate,
+        $new_overdue_rate,
+        $next_due_date,
+        $deferred_agreement_amount,
+        $id
     );
 
     if (mysqli_stmt_execute($stmt)) {
@@ -277,7 +294,7 @@ if (isset($_GET['delete'])) {
         $sql_delete_contract = "DELETE FROM contracts WHERE id = ?";
         $stmt_contract = mysqli_prepare($link, $sql_delete_contract);
         mysqli_stmt_bind_param($stmt_contract, "i", $id);
-        
+
         if (mysqli_stmt_execute($stmt_contract)) {
             // Commit the transaction
             mysqli_commit($link);
@@ -288,7 +305,6 @@ if (isset($_GET['delete'])) {
             $_SESSION['error_message'] = "계약 삭제에 실패했습니다: " . mysqli_error($link);
         }
         mysqli_stmt_close($stmt_contract);
-
     } catch (Exception $e) {
         // Rollback the transaction on error
         mysqli_rollback($link);
@@ -317,19 +333,20 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_memos') {
 
     // --- Start output buffering ---
     ob_start();
-    ?>
+?>
     <div class="memo-list" id="memo-list-popup-<?php echo $contract_id; ?>">
         <?php if (empty($memos)): ?>
             <p class="no-memos">작성된 메모가 없습니다.</p>
-        <?php else: foreach ($memos as $memo): ?>
-            <div class="memo-item" style="border-left-color: <?php echo htmlspecialchars($memo['color']); ?>;">
-                <div class="memo-actions">
-                    <button type="button" class="btn btn-sm edit-memo-btn" data-memo-id="<?php echo $memo['id']; ?>" data-memo-text="<?php echo htmlspecialchars($memo['memo_text']); ?>" data-memo-color="<?php echo htmlspecialchars($memo['color']); ?>">수정</button>
+            <?php else: foreach ($memos as $memo): ?>
+                <div class="memo-item" style="border-left-color: <?php echo htmlspecialchars($memo['color']); ?>;">
+                    <div class="memo-actions">
+                        <button type="button" class="btn btn-sm edit-memo-btn" data-memo-id="<?php echo $memo['id']; ?>" data-memo-text="<?php echo htmlspecialchars($memo['memo_text']); ?>" data-memo-color="<?php echo htmlspecialchars($memo['color']); ?>">수정</button>
+                    </div>
+                    <p class="memo-text"><?php echo nl2br(htmlspecialchars($memo['memo_text'])); ?></p>
+                    <p class="memo-meta"><strong>작성자:</strong> <?php echo htmlspecialchars($memo['employee_name'] ?? $memo['created_by']); ?> | <strong>작성일:</strong> <?php echo $memo['created_at']; ?><?php if ($memo['updated_at']): ?> | <strong>수정일:</strong> <?php echo $memo['updated_at']; ?><?php endif; ?></p>
                 </div>
-                <p class="memo-text"><?php echo nl2br(htmlspecialchars($memo['memo_text'])); ?></p>
-                <p class="memo-meta"><strong>작성자:</strong> <?php echo htmlspecialchars($memo['employee_name'] ?? $memo['created_by']); ?> | <strong>작성일:</strong> <?php echo $memo['created_at']; ?><?php if($memo['updated_at']): ?> | <strong>수정일:</strong> <?php echo $memo['updated_at']; ?><?php endif; ?></p>
-            </div>
-        <?php endforeach; endif; ?>
+        <?php endforeach;
+        endif; ?>
     </div>
     <div class="memo-form-container">
         <form action="../process/memo_process.php" method="post" class="memo-form">
@@ -343,12 +360,12 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_memos') {
                     <label>자주 쓰는 메모</label>
                     <select name="frequent_memo" class="frequent-memo-select">
                         <option value="">선택</option>
-                        <?php foreach($frequent_memos as $fm): ?><option value="<?php echo htmlspecialchars($fm['memo_text']); ?>"><?php echo htmlspecialchars($fm['memo_text']); ?></option><?php endforeach; ?>
+                        <?php foreach ($frequent_memos as $fm): ?><option value="<?php echo htmlspecialchars($fm['memo_text']); ?>"><?php echo htmlspecialchars($fm['memo_text']); ?></option><?php endforeach; ?>
                     </select>
                 </div>
                 <div class="form-col">
                     <label>색상</label>
-                    <select name="color"><?php foreach($memo_colors as $color_val => $color_name): ?><option value="<?php echo $color_val; ?>"><?php echo $color_name; ?></option><?php endforeach; ?></select>
+                    <select name="color"><?php foreach ($memo_colors as $color_val => $color_name): ?><option value="<?php echo $color_val; ?>"><?php echo $color_name; ?></option><?php endforeach; ?></select>
                 </div>
             </div>
             <div class="form-buttons" style="text-align: right; margin-top: 15px;">
@@ -357,7 +374,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_memos') {
             </div>
         </form>
     </div>
-    <?php
+<?php
     // --- End output buffering and echo content ---
     echo ob_get_clean();
     exit();
@@ -410,6 +427,23 @@ if (isset($_POST['action']) && $_POST['action'] === 'update_contract_classificat
         echo json_encode(['success' => true]);
     } else {
         echo json_encode(['success' => false, 'message' => 'DB 오류: ' . mysqli_error($link)]);
+    }
+    exit;
+}
+
+// --- Search Handler (for AJAX Modal) ---
+if (isset($_GET['action']) && $_GET['action'] == 'search') {
+    ob_start();
+    header('Content-Type: application/json');
+    try {
+        $keyword = $_GET['keyword'] ?? '';
+        $search_params = ['search' => $keyword, 'status' => 'active', 'limit' => 'all', 'sort' => 'loan_date_desc'];
+        $result = getContracts($link, $search_params);
+        ob_clean();
+        echo json_encode($result['data']);
+    } catch (Exception $e) {
+        ob_clean();
+        echo json_encode(['error' => $e->getMessage()]);
     }
     exit;
 }

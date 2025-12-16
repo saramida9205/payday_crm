@@ -152,7 +152,7 @@ function sendSlackNotification($payload, $webhookUrl = SLACK_WEBHOOK_URL)
     $result = curl_exec($ch);
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $curl_error = curl_error($ch);
-    curl_close($ch);
+
 
     if ($result === 'ok' && $http_code === 200) {
         return true;
@@ -185,7 +185,7 @@ function sendSmsApi($data, $type = 'sms')
     $response = curl_exec($ch);
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $curl_error = curl_error($ch);
-    curl_close($ch);
+
 
     if ($curl_error) {
         return ['success' => false, 'message' => 'cURL Error: ' . $curl_error];
@@ -222,7 +222,7 @@ function checkSmsResultApi($sendCode)
     $response = curl_exec($ch);
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $curl_error = curl_error($ch);
-    curl_close($ch);
+
 
     if ($curl_error) {
         return ['success' => false, 'message' => 'cURL Error: ' . $curl_error];
@@ -1152,4 +1152,22 @@ function get_transaction_ledger_data($link, $contract_id, $start_date = null, $e
     }
 
     return $processed_ledger;
+}
+
+/**
+ * Retrieves a contract by its ID.
+ * @param mysqli $link Database connection.
+ * @param int $id Contract ID.
+ * @return array|null Contract data or null if not found.
+ */
+function getContractById($link, $id)
+{
+    if (!$id) return null;
+    $stmt = mysqli_prepare($link, "SELECT * FROM contracts WHERE id = ?");
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $contract = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+    return $contract;
 }

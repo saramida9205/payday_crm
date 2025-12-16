@@ -1649,8 +1649,227 @@ table .del_btn {
     border-radius: 5px;
 }
 
+
 /* 에디터 스타일 개선 */
 #template-edit-modal .modal-footer {
     text-align: right;
     margin-top: 15px;
+}
+
+/* --- 공지사항 게시판 스타일 --- */
+.notice-board-container {
+    width: 100%;
+    margin: 0 auto 30px auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #e6e9ed;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.notice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #555;
+    padding-bottom: 10px;
+}
+
+.notice-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.notice-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.notice-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.notice-item:last-child {
+    border-bottom: none;
+}
+
+.notice-item:hover {
+    background-color: #f8f9fa;
+}
+
+.notice-item.important {
+    background-color: #fff8e1;
+    font-weight: bold;
+}
+
+.notice-item.important .notice-title::before {
+    content: '[필독] ';
+    color: #d9534f;
+    font-weight: bold;
+}
+
+.notice-title {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 15px;
+}
+
+.notice-meta {
+    font-size: 0.85rem;
+    color: #888;
+    white-space: nowrap;
+}
+
+.notice-meta span {
+    margin-left: 10px;
+}
+
+/* 공지사항 모달 타이틀 */
+#notice-view-modal .modal-title-text {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+#notice-view-modal .notice-info {
+    font-size: 0.9rem;
+    color: #666;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+#notice-view-modal .notice-content {
+    min-height: 200px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+/* --- 공지사항 작성 모달 스타일 개선 --- */
+#notice-write-modal .modal-content {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border: none;
+}
+
+#notice-write-modal .modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eee;
+    padding: 20px 25px;
+    border-radius: 12px 12px 0 0;
+}
+
+#notice-write-modal .modal-title {
+    width: 100%;
+    font-weight: bold;
+    color: #333;
+    font-size: 1.25rem;
+}
+
+#notice-write-modal .modal-body {
+    padding: 30px;
+    background-color: #fff;
+}
+
+#notice-write-modal .form-label {
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+#notice-write-modal .form-control {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+#notice-write-modal .form-control:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+#notice-write-modal textarea.form-control {
+    line-height: 1.6;
+    resize: vertical;
+}
+
+/* 중요 공지 커스텀 체크박스 스타일 */
+#notice-write-modal .form-check {
+    background-color: #fff8e1;
+    padding: 15px 20px 15px 40px;
+    border-radius: 6px;
+    border: 1px solid #ffeeba;
+    display: flex;
+    /* flex로 변경하여 정렬 개선 */
+    align-items: center;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    position: relative;
+}
+
+#notice-write-modal .form-check-input {
+    width: 20px;
+    height: 20px;
+    margin-top: 0;
+    position: absolute;
+    left: 12px;
+}
+
+#notice-write-modal .form-check-label {
+    margin-left: 5px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: #d9534f;
+    font-weight: bold;
+}
+
+#notice-write-modal .modal-footer {
+    border-top: 1px solid #eee;
+    padding: 20px 25px;
+    background-color: #fbfbfb;
+    border-radius: 0 0 12px 12px;
+}
+
+#notice-write-modal .btn {
+    padding: 10px 25px;
+    font-weight: 500;
+    border-radius: 6px;
+}
+
+#notice-write-modal .btn-secondary {
+    background-color: #e9ecef;
+    border: 1px solid #dee2e6;
+    color: #333;
+}
+
+#notice-write-modal .btn-secondary:hover {
+    background-color: #dde2e6;
+}
+
+#notice-write-modal .btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+#notice-write-modal .btn-primary:hover {
+    background-color: #0b5ed7;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

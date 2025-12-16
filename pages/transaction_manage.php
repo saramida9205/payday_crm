@@ -198,14 +198,14 @@ if ($active_tab == 'withdrawals') {
                             <td><?php echo htmlspecialchars($row['customer_id']); ?></td>
                             <td><?php echo htmlspecialchars($row['contract_id']); ?></td>
                             <td><a href="customer_detail.php?id=<?php echo $row['customer_id']; ?>"><?php echo htmlspecialchars($row['customer_name']); ?></a></td>
-                            <td><?php echo htmlspecialchars($row['previous_deposit_date']); ?></td>
-                            <td><?php echo htmlspecialchars($row['collection_date']); ?></td>
+                            <td style="font-weight: light"><?php echo htmlspecialchars($row['previous_deposit_date']); ?></td>
+                            <td style="font-weight: bold"><?php echo htmlspecialchars($row['collection_date']); ?></td>
                             <td><?php echo htmlspecialchars($row['agreement_date']); ?>일</td>
-                            <td style="text-align: right;"><?php echo number_format($row['total_deposit']); ?></td>
+                            <td style="text-align: right; font-weight: bold;"><?php echo number_format($row['total_deposit']); ?></td>
                             <td style="text-align: right;"><?php echo number_format($row['expense']); ?></td>
                             <td style="text-align: right;"><?php echo number_format($row['interest']); ?></td>
                             <td style="text-align: right;"><?php echo number_format($row['principal']); ?></td>
-                            <td style="text-align: right; color: #dc3545;"><?php echo number_format($row['shortfall']); ?></td>
+                            <td style="text-align: right; color: #dc3545; font-weight: bold; "><?php echo number_format($row['shortfall']); ?></td>
                             <td style="text-align: right; font-weight: bold;"><?php echo number_format($row['balance_as_of']); ?></td>
                         </tr>
                 <?php endforeach;

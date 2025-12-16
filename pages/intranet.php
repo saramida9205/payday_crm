@@ -116,6 +116,22 @@ $company_info = get_all_company_info($link);
     <div class="grid-cell"><?php echo htmlspecialchars($company_info['expense_account'] ?? '은행명 0000-0000-0000'); ?></div>
 </div>
 
+<!-- 공지사항 게시판 섹션 -->
+<div class="notice-board-container">
+    <div class="notice-header">
+        <h3>📢 사내 공지사항</h3>
+        <?php if ($_SESSION['permission_level'] == '0' || $_SESSION['permission_level'] == 'admin'): ?>
+            <button class="btn btn-primary btn-sm" onclick="openNoticeWriteModal()">📝 글쓰기</button>
+        <?php endif; ?>
+    </div>
+    <ul class="notice-list" id="notice-list-container">
+        <li style="text-align: center; padding: 20px; color: #777;">공지사항을 불러오는 중...</li>
+    </ul>
+    <div style="text-align: center; margin-top: 15px; display: none;" id="notice-load-more-container">
+        <!-- 더보기 기능은 추후 확장 가능 -->
+    </div>
+</div>
+
 <div class="messaging-container">
     <!-- Send Message Form -->
     <div class="form-container">
@@ -590,5 +606,343 @@ $company_info = get_all_company_info($link);
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<!-- Notice View Modal -->
+<div class="modal fade" id="notice-view-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title-text" id="notice-view-title">제목</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: none; border: none; font-size: 24px; font-weight: bold;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="notice-info">
+                    <span id="notice-view-author">작성자</span> |
+                    <span id="notice-view-date">2025-01-01</span> |
+                    조회 <span id="notice-view-count">0</span>
+                </div>
+                <div class="notice-content" id="notice-view-content"></div>
+                <div id="notice-view-file-container" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee; display: none;">
+                    <strong>📎 첨부파일:</strong> <a href="#" id="notice-view-file-link" download target="_blank">filename.ext</a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="notice-admin-buttons" style="display:none; margin-right: auto;">
+                    <button type="button" class="btn btn-warning btn-sm" onclick="editNotice()">수정</button>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteNotice()">삭제</button>
+                </div>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="margin-top: 20px; align-self: center;">닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notice Write/Edit Modal -->
+<div class="modal fade" id="notice-write-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="notice-write-title">공지사항 작성</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: none; border: none; font-size: 24px; font-weight: bold;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="notice-id">
+                <div class="mb-3">
+                    <label for="notice-title" class="form-label">제목</label>
+                    <input type="text" class="form-control" id="notice-title" required>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="notice-important">
+                    <label class="form-check-label" for="notice-important">중요 공지 (상단 고정)</label>
+                </div>
+                <div class="mb-3">
+                    <label for="notice-content" class="form-label">내용</label>
+                    <textarea class="form-control" id="notice-content" rows="10" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="notice-attachment" class="form-label">첨부파일</label>
+                    <input type="file" class="form-control" id="notice-attachment">
+                    <div id="notice-current-file" style="margin-top: 5px; font-size: 0.9em; display: none;">
+                        현재 파일: <span id="current-file-name"></span>
+                        <div class="form-check" style="display: inline-block; margin-left: 10px;">
+                            <input class="form-check-input" type="checkbox" id="delete-file-check">
+                            <label class="form-check-label" for="delete-file-check" style="color: #dc3545;">파일 삭제</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" onclick="saveNotice()">저장</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Notice Board Logic
+    let currentNoticeId = 0;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadNotices();
+    });
+
+    function loadNotices() {
+        console.log('Loading notices...');
+        fetch('../process/notice_process.php?action=get_notices&limit=5')
+            .then(res => {
+                if (!res.ok) throw new Error('Network response was not ok');
+                return res.text(); // Use text() to handle potential non-JSON errors
+            })
+            .then(text => {
+                try {
+                    const data = JSON.parse(text);
+                    if (data.success) {
+                        renderNoticeList(data.notices);
+                    } else {
+                        console.error('Notice load error:', data.message);
+                        const list = document.getElementById('notice-list-container');
+                        list.innerHTML = `<li style="text-align: center; padding: 20px; color: #dc3545;">❌ 오류: ${data.message}</li>`;
+                    }
+                } catch (e) {
+                    console.error('JSON Parse error:', e, text);
+                    const list = document.getElementById('notice-list-container');
+                    list.innerHTML = '<li style="text-align: center; padding: 20px; color: #dc3545;">⚠️ 데이터 처리 오류 (서버 응답 확인 필요)</li>';
+                }
+            })
+            .catch(err => {
+                console.error('Error loading notices:', err);
+                const list = document.getElementById('notice-list-container');
+                list.innerHTML = '<li style="text-align: center; padding: 20px; color: #dc3545;">⚠️ 서버 통신 오류</li>';
+            });
+    }
+
+    function renderNoticeList(notices) {
+        const list = document.getElementById('notice-list-container');
+        list.innerHTML = '';
+
+        if (notices.length === 0) {
+            list.innerHTML = '<li style="text-align: center; padding: 20px; color: #777;">등록된 공지사항이 없습니다.</li>';
+            return;
+        }
+
+        notices.forEach(notice => {
+            const isImportant = notice.is_important == 1;
+            const className = isImportant ? 'notice-item important' : 'notice-item';
+
+            // 날짜 포맷 (YYYY-MM-DD)
+            const date = notice.created_at.substring(0, 10);
+
+            // 파일 아이콘
+            const fileIcon = notice.file_path ? '<i class="fas fa-paperclip" style="color:#888; margin-right:5px;" title="첨부파일"></i>' : '';
+
+            const html = `
+            <li class="${className}" onclick="openNoticeView(${notice.id})">
+                <div class="notice-title">
+                    ${fileIcon}
+                    ${escapeHTML_notice(notice.title)}
+                </div>
+                <div class="notice-meta">
+                    <span>${notice.author_name}</span>
+                    <span>${date}</span>
+                </div>
+            </li>
+        `;
+            list.insertAdjacentHTML('beforeend', html);
+        });
+    }
+
+    function openNoticeView(id) {
+        currentNoticeId = id;
+        fetch(`../process/notice_process.php?action=get_notice&id=${id}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const notice = data.notice;
+
+                    document.getElementById('notice-view-title').textContent = notice.title;
+                    document.getElementById('notice-view-author').textContent = notice.author_name;
+                    document.getElementById('notice-view-date').textContent = notice.created_at;
+                    document.getElementById('notice-view-count').textContent = notice.view_count;
+                    document.getElementById('notice-view-content').textContent = notice.content;
+
+                    // 파일 표시 로직
+                    const fileContainer = document.getElementById('notice-view-file-container');
+                    const fileLink = document.getElementById('notice-view-file-link');
+
+                    if (notice.file_path && notice.file_name) {
+                        let filePath = notice.file_path;
+                        // Fix for legacy paths or mismatched server config
+                        if (filePath.startsWith('/payday/')) {
+                            filePath = filePath.replace('/payday', '');
+                        }
+
+                        fileLink.href = '..' + filePath; // 상대 경로 조정
+                        fileLink.textContent = notice.file_name;
+                        fileLink.download = notice.file_name;
+                        fileContainer.style.display = 'block';
+                    } else {
+                        fileContainer.style.display = 'none';
+                    }
+
+                    // 관리 버튼 표시 여부
+                    const adminBtns = document.getElementById('notice-admin-buttons');
+                    adminBtns.style.display = notice.can_edit ? 'block' : 'none';
+
+                    const modal = new bootstrap.Modal(document.getElementById('notice-view-modal'));
+                    modal.show();
+                } else {
+                    alert('공지사항을 불러올 수 없습니다.');
+                }
+            });
+    }
+
+    function openNoticeWriteModal() {
+        // Reset form
+        document.getElementById('notice-id').value = '';
+        document.getElementById('notice-title').value = '';
+        document.getElementById('notice-content').value = '';
+        document.getElementById('notice-important').checked = false;
+        document.getElementById('notice-attachment').value = ''; // 파일 리셋
+        document.getElementById('notice-current-file').style.display = 'none'; // 기존 파일 정보 숨김
+        document.getElementById('delete-file-check').checked = false;
+
+        document.getElementById('notice-write-title').textContent = '공지사항 작성';
+
+        const modal = new bootstrap.Modal(document.getElementById('notice-write-modal'));
+        modal.show();
+    }
+
+    function editNotice() {
+        // Hide view modal
+        const viewModalEl = document.getElementById('notice-view-modal');
+        const viewModal = bootstrap.Modal.getInstance(viewModalEl);
+        viewModal.hide();
+
+        // Fetch data again (or use displayed data, but fetch is safer for content full version)
+        fetch(`../process/notice_process.php?action=get_notice&id=${currentNoticeId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const notice = data.notice;
+                    document.getElementById('notice-id').value = notice.id;
+                    document.getElementById('notice-title').value = notice.title;
+                    document.getElementById('notice-content').value = notice.content;
+                    document.getElementById('notice-important').checked = (notice.is_important == 1);
+                    document.getElementById('notice-attachment').value = ''; // 새 파일 업로드 초기화
+                    document.getElementById('delete-file-check').checked = false;
+
+                    // 기존 파일 있으면 표시
+                    const currentFileDiv = document.getElementById('notice-current-file');
+                    const currentFileNameSpan = document.getElementById('current-file-name');
+
+                    if (notice.file_name) {
+                        currentFileNameSpan.textContent = notice.file_name;
+                        currentFileDiv.style.display = 'block';
+                    } else {
+                        currentFileDiv.style.display = 'none';
+                    }
+
+                    document.getElementById('notice-write-title').textContent = '공지사항 수정';
+
+                    const writeModal = new bootstrap.Modal(document.getElementById('notice-write-modal'));
+                    writeModal.show();
+                }
+            });
+    }
+
+    function saveNotice() {
+        const id = document.getElementById('notice-id').value;
+        const title = document.getElementById('notice-title').value;
+        const content = document.getElementById('notice-content').value;
+        const isImportant = document.getElementById('notice-important').checked ? 1 : 0;
+        const fileInput = document.getElementById('notice-attachment');
+        const deleteFile = document.getElementById('delete-file-check').checked ? 1 : 0;
+
+        if (!title || !content) {
+            alert('제목과 내용을 입력해주세요.');
+            return;
+        }
+
+        const action = id ? 'update_notice' : 'create_notice';
+        const formData = new FormData();
+        formData.append('action', action);
+        if (id) formData.append('id', id);
+        formData.append('title', title);
+        formData.append('content', content);
+        formData.append('is_important', isImportant);
+
+        if (fileInput.files.length > 0) {
+            formData.append('attachment', fileInput.files[0]);
+        }
+
+        if (deleteFile) {
+            formData.append('delete_file', '1');
+        }
+
+        fetch('../process/notice_process.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    // Close modal
+                    const modalEl = document.getElementById('notice-write-modal');
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    modal.hide();
+
+                    // Reload list
+                    loadNotices();
+                } else {
+                    alert('오류: ' + data.message);
+                }
+            });
+    }
+
+    function deleteNotice() {
+        if (!confirm('정말 삭제하시겠습니까?')) return;
+
+        const formData = new FormData();
+        formData.append('action', 'delete_notice');
+        formData.append('id', currentNoticeId);
+
+        fetch('../process/notice_process.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    // Hide view modal
+                    const viewModalEl = document.getElementById('notice-view-modal');
+                    const viewModal = bootstrap.Modal.getInstance(viewModalEl);
+                    viewModal.hide();
+
+                    // Reload list
+                    loadNotices();
+                } else {
+                    alert('오류: ' + data.message);
+                }
+            });
+    }
+
+    // Renamed to avoid partial conflict if needed, though scoped previously
+    function escapeHTML_notice(str) {
+        if (str === null || str === undefined) return '';
+        return str.toString().replace(/[&<>"']/g, function(match) {
+            return {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            } [match];
+        });
+    }
+</script>
 
 <?php include 'footer.php'; ?>

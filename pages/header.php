@@ -86,6 +86,7 @@ $company_info = get_all_company_info($link);
                     <li><a href="contract_manage.php" class="<?php echo in_array($current_page, ['contract_manage.php', 'transaction_ledger.php', 'expected_interest_view.php']) ? 'active' : ''; ?>">계약관리</a></li>
                     <li><a href="collection_manage.php" class="<?php echo in_array($current_page, ['collection_manage.php', 'collection_trash.php']) ? 'active' : ''; ?>">회수관리</a></li>
                     <li><a href="transaction_manage.php" class="<?php echo in_array($current_page, ['transaction_manage.php']) ? 'active' : ''; ?>">입출금관리</a></li>
+                    <li><a href="deposit_upload.php" class="<?php echo in_array($current_page, ['deposit_upload.php']) ? 'active' : ''; ?>" style="font-size: 0.9em; padding-left: 30px;">└ 은행거래 가져오기</a></li>
                     <li><a href="reports.php" class="<?php echo in_array($current_page, ['reports.php']) ? 'active' : ''; ?>">보고서</a></li>
                     <li><a href="daily_report.php" class="<?php echo in_array($current_page, ['daily_report.php']) ? 'active' : ''; ?>">업무일보</a></li>
                     <li><a href="bond_ledger.php" class="<?php echo in_array($current_page, ['bond_ledger.php']) ? 'active' : ''; ?>">채권원장</a></li>
