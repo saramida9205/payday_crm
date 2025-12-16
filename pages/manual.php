@@ -1,9 +1,11 @@
 <div class="manual-container" style="max-width: 1000px; margin: 0 auto; padding: 20px;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #007bff; padding-bottom: 10px;">
         <h2 style="margin: 0; border: none; padding: 0;">CRM 사용설명서</h2>
-        <button type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
+        <div>
+            <button align="right" style="margin-left: auto;" type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
+            <button align="right" style="margin-left: auto;" type="button" class="btn btn-secondary" onclick="window.print()">인쇄</button>
+        </div>
     </div>
-
     <div class="manual-nav" style="margin-bottom: 30px; background: #f8f9fa; padding: 15px; border-radius: 5px;">
         <strong>목차:</strong>
         <a href="#section-intranet" style="margin-left: 10px;">인트라넷</a> |
@@ -223,6 +225,8 @@
 
     <div style="margin-top: 50px; text-align: center; color: #6c757d;">
         <p>추가적인 문의사항은 관리자에게 문의바랍니다.</p>
+        <button style="margin-left: auto;" type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
+        <button style="margin-left: auto;" type="button" class="btn btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">맨 위로</button>
     </div>
 </div>
 
