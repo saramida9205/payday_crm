@@ -702,3 +702,11 @@ Stack trace:
 [11-Dec-2025 13:02:58 Asia/Seoul] PHP Warning:  Undefined array key "mod" in /volume1/web/payday/pages/header.php on line 25
 [11-Dec-2025 15:21:36 Asia/Seoul] PHP Warning:  Undefined array key "mod" in /volume1/web/payday/pages/header.php on line 25
 [11-Dec-2025 15:22:00 Asia/Seoul] PHP Warning:  Undefined array key "mod" in /volume1/web/payday/pages/header.php on line 25
+[12-Dec-2025 12:03:38 Asia/Seoul] PHP Warning:  Undefined array key "mod" in /volume1/web/payday/pages/header.php on line 25
+[12-Dec-2025 12:03:49 Asia/Seoul] PHP Warning:  Undefined array key "mod" in /volume1/web/payday/pages/header.php on line 25
+[15-Dec-2025 11:52:42 Asia/Seoul] PHP Warning:  Undefined array key "mod" in /volume1/web/payday/pages/header.php on line 25
+[15-Dec-2025 11:52:48 Asia/Seoul] PHP Warning:  Undefined array key "mod" in /volume1/web/payday/pages/header.php on line 25
+[15-Dec-2025 16:22:39 Asia/Seoul] PHP Warning:  Undefined array key "mod" in /volume1/web/payday/pages/header.php on line 25
+[15-Dec-2025 16:22:44 Asia/Seoul] PHP Warning:  Undefined array key "mod" in /volume1/web/payday/pages/header.php on line 25
+[15-Dec-2025 19:16:08 Asia/Seoul] PHP Warning:  Undefined array key "mod" in /volume1/web/payday/pages/header.php on line 25
+[15-Dec-2025 19:16:12 Asia/Seoul] PHP Warning:  Undefined array key "mod" in /volume1/web/payday/pages/header.php on line 25

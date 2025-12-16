@@ -22,7 +22,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 $current_page = basename($_SERVER['PHP_SELF']);
 
 // 싱글모드 확인
-$is_single_mode = isset($_GET['contract_id']) && !empty($_GET['contract_id']) && $_GET['mod'] == 'single';
+$is_single_mode = isset($_GET['contract_id']) && !empty($_GET['contract_id']) && isset($_GET['mod']) && $_GET['mod'] == 'single';
 
 //회사정보가져오기
 $company_info = get_all_company_info($link);
@@ -92,7 +92,7 @@ $company_info = get_all_company_info($link);
                     <li><a href="sms.php" class="<?php echo in_array($current_page, ['sms.php', 'sms_log.php']) ? 'active' : ''; ?>">SMS발송</a></li>
                     <li><a href="sms_log.php" class="<?php echo in_array($current_page, ['sms_log.php']) ? 'active' : ''; ?>">SMS발송내역</a></li>
                     <li><a href="certificate_print.php" class="<?php echo in_array($current_page, ['certificate_print.php']) ? 'active' : ''; ?>">증명서인쇄</a></li>
-                    <li><a href="manual.php" class="<?php echo in_array($current_page, ['manual.php']) ? 'active' : ''; ?>">사용설명서</a></li>
+                    <li><a href="manual.php?mod=single" class="<?php echo in_array($current_page, ['manual.php']) ? 'active' : ''; ?>">사용설명서</a></li>
                     <?php if (isset($_SESSION['permission_level']) && $_SESSION['permission_level'] == 0): ?>
                         <?php
                         $admin_pages = ['bond_ledger_history.php', 'employee_manage.php', 'condition_change_manage.php', 'backup_manage.php', 'holiday_manage.php', 'settings.php', 'company_images.php'];

@@ -1,20 +1,177 @@
+<?php include 'header.php'; ?>
+
+<style>
+    /* Mobile Optimization for Manual Page */
+    @media (max-width: 768px) {
+        .manual-container {
+            padding: 15px !important;
+            width: 100% !important;
+        }
+
+        /* Header Section */
+        .manual-header {
+            flex-direction: column;
+            align-items: stretch !important;
+            gap: 15px;
+            border-bottom: 1px solid #007bff !important;
+        }
+
+        .manual-header h2 {
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 5px !important;
+        }
+
+        .manual-header .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .manual-header .btn-group button {
+            flex: 1;
+            margin-left: 0 !important;
+        }
+
+        /* Navigation Section */
+        .manual-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px !important;
+        }
+
+        .manual-nav strong {
+            width: 100%;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .manual-nav a {
+            display: inline-block;
+            padding: 8px 12px;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            /* Pill shape */
+            color: #495057;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin: 0 !important;
+            text-align: center;
+            flex: 1 1 auto;
+            /* Grow to fill space */
+        }
+
+        .manual-nav a:hover {
+            background-color: #e9ecef;
+        }
+
+        .manual-nav span.separator {
+            display: none;
+            /* Hide separators on mobile */
+        }
+
+        /* Content Sections */
+        .manual-section {
+            margin-bottom: 30px !important;
+        }
+
+        .manual-details summary {
+            padding: 12px;
+            background-color: #f1f3f5;
+            border-radius: 8px;
+            font-size: 1.05rem;
+        }
+
+        .manual-details ul {
+            padding-left: 20px;
+        }
+
+        .manual-details li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+    }
+
+    /* Print Optimization */
+    @media print {
+
+        /* Global Reset for Print: Override style.css */
+        body * {
+            visibility: hidden;
+        }
+
+        /* Make Manual Container Visible */
+        .manual-container,
+        .manual-container * {
+            visibility: visible !important;
+        }
+
+        .manual-container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            max-width: none !important;
+        }
+
+        /* Hide Unwanted Elements */
+        .manual-header .btn-group,
+        .manual-nav,
+        .sidebar,
+        #sidebar,
+        .mobile-header,
+        footer,
+        .manual-footer button {
+            display: none !important;
+        }
+
+        /* Adjust Layout for Print */
+        .manual-header {
+            border-bottom: 1px solid #000 !important;
+            margin-bottom: 20px !important;
+        }
+
+        .manual-section {
+            page-break-inside: avoid;
+            margin-bottom: 30px !important;
+        }
+
+        /* Force Expand Details */
+        details {
+            display: block !important;
+        }
+
+        /* details open 속성과 상관없이 내부 요소를 보이게 하려면 JS가 필요할 수 있음. 
+           CSS만으로는 닫힌 details의 내용을 보여주기 어려움. 
+           따라서 사용자가 '모두 열기'를 하고 인쇄하도록 유도하거나, 
+           JS onbeforeprint 이벤트를 사용해야 함. 
+           우선 닫힌 상태 그대로 출력되더라도 내용은 보이게 함. */
+    }
+</style>
+
 <div class="manual-container" style="max-width: 1000px; margin: 0 auto; padding: 20px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #007bff; padding-bottom: 10px;">
+    <div class="manual-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #007bff; padding-bottom: 10px;">
         <h2 style="margin: 0; border: none; padding: 0;">CRM 사용설명서</h2>
-        <div>
-            <button align="right" style="margin-left: auto;" type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
-            <button align="right" style="margin-left: auto;" type="button" class="btn btn-secondary" onclick="window.print()">인쇄</button>
+        <div class="btn-group">
+            <button type="button" class="btn btn-info" id="toggleDetailsBtn" onclick="toggleAllDetails()" style="margin-left: auto; color: white;">상세 열기</button>
+            <button type="button" class="btn btn-secondary" onclick="history.back()" style="margin-left: 5px;">뒤로가기</button>
+            <button type="button" class="btn btn-secondary" onclick="window.print()" style="margin-left: 5px;">인쇄</button>
         </div>
     </div>
     <div class="manual-nav" style="margin-bottom: 30px; background: #f8f9fa; padding: 15px; border-radius: 5px;">
         <strong>목차:</strong>
-        <a href="#section-intranet" style="margin-left: 10px;">인트라넷</a> |
-        <a href="#section-customer" style="margin-left: 10px;">고객관리</a> |
-        <a href="#section-contract" style="margin-left: 10px;">계약관리</a> |
-        <a href="#section-collection" style="margin-left: 10px;">회수관리</a> |
-        <a href="#section-transaction" style="margin-left: 10px;">입출금관리</a> |
-        <a href="#section-reports" style="margin-left: 10px;">보고서</a> |
-        <a href="#section-sms" style="margin-left: 10px;">SMS관리</a> |
+        <a href="#section-intranet" style="margin-left: 10px;">인트라넷</a><span class="separator"> |</span>
+        <a href="#section-customer" style="margin-left: 10px;">고객관리</a><span class="separator"> |</span>
+        <a href="#section-contract" style="margin-left: 10px;">계약관리</a><span class="separator"> |</span>
+        <a href="#section-collection" style="margin-left: 10px;">회수관리</a><span class="separator"> |</span>
+        <a href="#section-transaction" style="margin-left: 10px;">입출금관리</a><span class="separator"> |</span>
+        <a href="#section-reports" style="margin-left: 10px;">보고서</a><span class="separator"> |</span>
+        <a href="#section-sms" style="margin-left: 10px;">SMS관리</a><span class="separator"> |</span>
         <a href="#section-admin" style="margin-left: 10px; color: red;">관리자메뉴</a>
     </div>
 
@@ -223,11 +380,36 @@
         </details>
     </div>
 
-    <div style="margin-top: 50px; text-align: center; color: #6c757d;">
+    <div class="manual-footer" style="margin-top: 50px; text-align: center; color: #6c757d;">
         <p>추가적인 문의사항은 관리자에게 문의바랍니다.</p>
         <button style="margin-left: auto;" type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
         <button style="margin-left: auto;" type="button" class="btn btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">맨 위로</button>
     </div>
 </div>
+</div>
+
+<script>
+    function toggleAllDetails() {
+        // 모든 details 태그를 찾음
+        const details = document.querySelectorAll('details');
+        const btn = document.getElementById('toggleDetailsBtn');
+
+        // 현재 버튼 텍스트가 '열기'를 포함하는지 확인 (즉, 닫힌 상태인지 체크)
+        const isClosed = btn.textContent.includes('열기');
+
+        details.forEach(detail => {
+            if (isClosed) {
+                // 열려야 하는 경우 (현재 닫혀있음)
+                detail.setAttribute('open', '');
+            } else {
+                // 닫혀야 하는 경우 (현재 열려있음)
+                detail.removeAttribute('open');
+            }
+        });
+
+        // 버튼 텍스트 변경
+        btn.textContent = isClosed ? '상세 접기' : '상세 열기';
+    }
+</script>
 
 <?php include 'footer.php'; ?>
