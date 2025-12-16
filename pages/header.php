@@ -81,17 +81,17 @@ $company_info = get_all_company_info($link);
                     <a href="../process/logout_process.php" class="logout-btn">로그아웃</a>
                 </div>
                 <ul class="nav">
-                    <li><a href="intranet.php" class="<?php echo in_array($current_page, ['intranet.php']) ? 'active' : ''; ?>">인트라넷</a></li>
+                    <li><a href="intranet.php" class="<?php echo in_array($current_page, ['intranet.php']) ? 'active' : ''; ?>">인트라넷(공지사항)</a></li>
                     <li><a href="customer_manage.php" class="<?php echo in_array($current_page, ['customer_manage.php', 'customer_detail.php']) ? 'active' : ''; ?>">고객관리</a></li>
                     <li><a href="contract_manage.php" class="<?php echo in_array($current_page, ['contract_manage.php', 'transaction_ledger.php', 'expected_interest_view.php']) ? 'active' : ''; ?>">계약관리</a></li>
                     <li><a href="collection_manage.php" class="<?php echo in_array($current_page, ['collection_manage.php', 'collection_trash.php']) ? 'active' : ''; ?>">회수관리</a></li>
                     <li><a href="transaction_manage.php" class="<?php echo in_array($current_page, ['transaction_manage.php']) ? 'active' : ''; ?>">입출금관리</a></li>
                     <li><a href="deposit_upload.php" class="<?php echo in_array($current_page, ['deposit_upload.php']) ? 'active' : ''; ?>" style="font-size: 0.9em; padding-left: 30px;">└ 은행거래 가져오기</a></li>
                     <li><a href="reports.php" class="<?php echo in_array($current_page, ['reports.php']) ? 'active' : ''; ?>">보고서</a></li>
-                    <li><a href="daily_report.php" class="<?php echo in_array($current_page, ['daily_report.php']) ? 'active' : ''; ?>">업무일보</a></li>
+                    <li><a href="daily_report.php" class="<?php echo in_array($current_page, ['daily_report.php']) ? 'active' : ''; ?>" style="font-size: 0.9em; padding-left: 30px;">└ 업무일보</a></li>
                     <li><a href="bond_ledger.php" class="<?php echo in_array($current_page, ['bond_ledger.php']) ? 'active' : ''; ?>">채권원장</a></li>
-                    <li><a href="sms.php" class="<?php echo in_array($current_page, ['sms.php', 'sms_log.php']) ? 'active' : ''; ?>">SMS발송</a></li>
-                    <li><a href="sms_log.php" class="<?php echo in_array($current_page, ['sms_log.php']) ? 'active' : ''; ?>">SMS발송내역</a></li>
+                    <li><a href="sms.php" class="<?php echo in_array($current_page, ['sms.php']) ? 'active' : ''; ?>">SMS발송</a></li>
+                    <li><a href="sms_log.php" class="<?php echo in_array($current_page, ['sms_log.php']) ? 'active' : ''; ?>" style="font-size: 0.9em; padding-left: 30px;">└ SMS발송내역</a></li>
                     <li><a href="certificate_print.php" class="<?php echo in_array($current_page, ['certificate_print.php']) ? 'active' : ''; ?>">증명서인쇄</a></li>
                     <li><a href="manual.php?mod=single" class="<?php echo in_array($current_page, ['manual.php']) ? 'active' : ''; ?>">사용설명서</a></li>
                     <?php if (isset($_SESSION['permission_level']) && $_SESSION['permission_level'] == 0): ?>
@@ -109,8 +109,9 @@ $company_info = get_all_company_info($link);
                                 <li><a href="condition_change_manage.php" class="<?php echo in_array($current_page, ['condition_change_manage.php']) ? 'active' : ''; ?>">조건변경관리</a></li>
                                 <li><a href="backup_manage.php" class="<?php echo in_array($current_page, ['backup_manage.php']) ? 'active' : ''; ?>">데이터베이스관리</a></li>
                                 <li><a href="holiday_manage.php" class="<?php echo in_array($current_page, ['holiday_manage.php']) ? 'active' : ''; ?>">휴일관리</a></li>
+                                <li><a href="certificate_print.php?#template-list-container" class="<?php echo in_array($current_page, ['certificate_print.php']) ? 'active' : ''; ?>">증명서템플릿관리</a></li>
                                 <li><a href="settings.php" class="<?php echo in_array($current_page, ['settings.php']) ? 'active' : ''; ?>">시스템 설정</a></li>
-                                <li><a href="company_images.php" class="<?php echo in_array($current_page, ['company_images.php']) ? 'active' : ''; ?>">회사관련이미지</a></li>
+                                <li><a href="company_images.php" class="<?php echo in_array($current_page, ['company_images.php']) ? 'active' : ''; ?> " style="font-size: 0.9em; padding-left: 30px;">└ 회사관련이미지</a></li>
                             </ul>
                         </li>
                     <?php endif; ?>

@@ -176,6 +176,8 @@
     </div>
 
     <div id="section-intranet" class="manual-section" style="margin-bottom: 40px;">
+        <h3 style="color: #fc6b17ff;">0. 초기사용시 관리자메뉴의 [시스템설정], [회사관련이미지]를 먼저 설정하고 시작하세요.</h3>
+        <br><br>
         <h3 style="color: #0d6efd;">1. 인트라넷</h3>
         <p>로그인 후 첫 화면으로, 사내 커뮤니케이션과 회사 정보를 확인하는 곳입니다.</p>
         <details class="manual-details">

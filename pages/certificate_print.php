@@ -155,7 +155,7 @@ $certificate_templates = get_all_certificate_templates();
 <hr style="margin: 40px 0;">
 
 <?php if (isset($_SESSION['permission_level']) && $_SESSION['permission_level'] == 0): ?>
-    <div class="template-management-container">
+    <div id="template-list-container" class="template-management-container">
         <h3>증명서 템플릿 관리</h3>
         <p>각 증명서의 기본 양식을 수정할 수 있습니다. 템플릿이 비어있거나 잘못된 경우, 초기화 버튼을 눌러 기본값으로 되돌릴 수 있습니다.</p>
         <div id="template-list" style="margin-top: 20px;">

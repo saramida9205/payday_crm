@@ -110,11 +110,14 @@ body {
     border-left: 3px solid #3498db;
 }
 
-.sidebar ul li.active a {
-    background-color: #34495e;
-    font-weight: 600;
+.sidebar ul li a.active {
+    background-color: #3498db;
+    font-weight: 700;
     color: #fff;
-    border-left: 3px solid #3498db;
+    border-left: none;
+    /* Remove border as background is high contrast */
+    border-radius: 4px;
+    margin: 0 10px;
 }
 
 /* 4. Page Headers */
