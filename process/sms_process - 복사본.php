@@ -19,15 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_template'])) {
             mysqli_stmt_close($stmt);
         }
     }
-    $mod = $_POST['mod'] ?? '';
-    $redirect_url = "../pages/sms.php";
-    $params = [];
-    if (!empty($contract_id)) $params[] = "contract_id=" . urlencode($contract_id);
-    if (!empty($mod)) $params[] = "mod=" . urlencode($mod);
-
-    if (!empty($params)) {
-        $redirect_url .= "?" . implode("&", $params);
-    }
+    $redirect_url = !empty($contract_id) ? "../pages/sms.php?contract_id=" . urlencode($contract_id) : "../pages/sms.php";
     header("location: " . $redirect_url);
     exit();
 }
@@ -51,15 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_template'])) {
             mysqli_stmt_close($stmt);
         }
     }
-    $mod = $_POST['mod'] ?? '';
-    $redirect_url = "../pages/sms.php";
-    $params = [];
-    if (!empty($contract_id)) $params[] = "contract_id=" . urlencode($contract_id);
-    if (!empty($mod)) $params[] = "mod=" . urlencode($mod);
-
-    if (!empty($params)) {
-        $redirect_url .= "?" . implode("&", $params);
-    }
+    $redirect_url = !empty($contract_id) ? "../pages/sms.php?contract_id=" . urlencode($contract_id) : "../pages/sms.php";
     header("location: " . $redirect_url);
     exit();
 }
@@ -81,41 +65,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_template'])) {
             mysqli_stmt_close($stmt);
         }
     }
-    $mod = $_POST['mod'] ?? '';
-    $redirect_url = "../pages/sms.php";
-    $params = [];
-    if (!empty($contract_id)) $params[] = "contract_id=" . urlencode($contract_id);
-    if (!empty($mod)) $params[] = "mod=" . urlencode($mod);
-
-    if (!empty($params)) {
-        $redirect_url .= "?" . implode("&", $params);
-    }
-    header("location: " . $redirect_url);
+    $redirect_url = !empty($contract_id) ? "../pages/sms.php?contract_id=" . urlencode($contract_id) : "../pages/sms.php";
+    header("location: " . $redirect_url); // This was missing the variable
     exit();
 }
 
-function getContractsForSms($link, $due_days = [], $contract_ids = null, $next_due_date = null)
-{
+function getContractsForSms($link, $due_days = [], $single_contract_id = null, $next_due_date = null) {
     $sql = "SELECT c.id as contract_id, c.*,
                    cu.name as customer_name, cu.phone as customer_phone, cu.bank_name, cu.account_number
             FROM contracts c
             JOIN customers cu ON c.customer_id = cu.id
             WHERE c.status IN ('active', 'overdue')";
 
-    if (!empty($contract_ids)) {
-        // 단일 ID가 들어온 경우 배열로 변환
-        if (!is_array($contract_ids)) {
-            $contract_ids = [(int)$contract_ids];
-        }
-        // $contract_ids가 배열인 경우 처리
-        $safe_contract_ids = array_map('intval', $contract_ids);
-        $ids_in_clause = implode(',', $safe_contract_ids);
-        if (!empty($ids_in_clause)) {
-            $sql .= " AND c.id IN ($ids_in_clause)";
-        }
+    if ($single_contract_id !== null) {
+        // 단일 계약 모드: 다른 필터 무시하고 해당 계약만 조회
+        $sql .= " AND c.id = " . (int)$single_contract_id;
     } else {
-        // 다중 계약 모드 (URL 파라미터 필터 기반)
-
+        // 다중 계약 모드
+        
         // 1. 상환일 필터 (우선순위 높음 or AND 조건)
         if (!empty($next_due_date)) {
             $sql .= " AND c.next_due_date = '" . mysqli_real_escape_string($link, $next_due_date) . "'";
@@ -131,11 +98,11 @@ function getContractsForSms($link, $due_days = [], $contract_ids = null, $next_d
             }
         }
     }
-
+    
     // 1. Fetch all contracts first
     $result = mysqli_query($link, $sql);
     $contracts = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
+    
     if (empty($contracts)) {
         return [];
     }
@@ -163,9 +130,9 @@ function getContractsForSms($link, $due_days = [], $contract_ids = null, $next_d
     foreach ($contracts as $contract) {
         // The full contract data is now available, including current_outstanding_principal
         $outstanding_principal = (float)$contract['current_outstanding_principal'];
-
+        
         $today = new DateTime();
-
+        
         $interest_data_today = calculateAccruedInterest($link, $contract, $today->format('Y-m-d'));
         $interest_today = $interest_data_today['total'];
 
@@ -217,8 +184,7 @@ function getContractsForSms($link, $due_days = [], $contract_ids = null, $next_d
  * @param string $message 문자 내용
  * @return array API 응답 결과 (decoded json)
  */
-function sendWideshotSms($apiKey, $userKey, $senderPhone, $recipientPhone, $title, $message)
-{
+function sendWideshotSms($apiKey, $userKey, $senderPhone, $recipientPhone, $title, $message) {
     // MMS 발송 여부는 현재 로직에서 사용되지 않으므로, 텍스트 길이에 따라 SMS/LMS만 분기합니다.
     // 메시지 길이에 따라 SMS/LMS API URL 분기
     $is_lms = strlen($message) > 90;
@@ -292,8 +258,7 @@ function sendWideshotSms($apiKey, $userKey, $senderPhone, $recipientPhone, $titl
  * @param array $result sendWideshotSms 함수의 결과
  * @param int|null $contractId 계약 ID
  */
-function notifySmsRequestToSlack($recipient, $result, $contractId)
-{
+function notifySmsRequestToSlack($recipient, $result, $contractId) {
     $customer_info = ($recipient['name'] ?? 'N/A') . " (" . ($recipient['phone'] ?? 'N/A') . ")";
     $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'];
     $contract_detail_url = $base_url . "/payday/pages/contract_manage.php"; // 계약관리 페이지로 링크
@@ -313,10 +278,10 @@ function notifySmsRequestToSlack($recipient, $result, $contractId)
 // --- SEND SMS (Placeholder for API integration) ---
 if (isset($_POST['send_sms']) || isset($_POST['send_sms_bulk'])) {
     if (session_status() == PHP_SESSION_NONE) session_start();
-
+    
     $sender_phone = $_POST['sender_phone'];
     $title = $_POST['title'] ?? ''; // LMS/MMS title
-    $mod = $_POST['mod'] ?? '';
+    $redirect_param = !empty($_POST['contract_id']) ? '?contract_id=' . urlencode($_POST['contract_id']) : '';
     $company_info = get_all_company_info($link);
     $apiKey = $company_info['wideshot_api_key'];
 
@@ -336,7 +301,7 @@ if (isset($_POST['send_sms']) || isset($_POST['send_sms_bulk'])) {
 
             $recipient = $recipients[0];
             $result = sendWideshotSms($apiKey, $userKey, $sender_phone, $recipient['phone'], $title, $message);
-
+            
             if (isset($result['code']) && $result['code'] == '200') {
                 $success_count++;
                 $log_status = 'pending';
@@ -358,7 +323,7 @@ if (isset($_POST['send_sms']) || isset($_POST['send_sms_bulk'])) {
             }
         } else { // 다중 발송
             $bulk_data = json_decode($_POST['bulk_data'], true);
-            foreach ($bulk_data as $index => $item) {
+            foreach($bulk_data as $index => $item) {
                 $userKey = substr(uniqid('b' . $index, true), 0, 12); // 각 메시지마다 12자 이내의 고유한 userkey 생성
                 $result = sendWideshotSms($apiKey, $userKey, $sender_phone, $item['phone'], $title, $item['message']);
                 if (isset($result['code']) && $result['code'] == '200') {
@@ -384,19 +349,13 @@ if (isset($_POST['send_sms']) || isset($_POST['send_sms_bulk'])) {
         }
 
         $_SESSION['message'] = "총 {$success_count}건의 SMS 발송 요청이 접수되었습니다. (실패: {$fail_count}건)";
+
     } else {
         // API 연동 전 안내 메시지
         $_SESSION['error_message'] = "SMS API가 아직 연동되지 않았습니다. 관리자에게 문의하세요.";
     }
 
-    $redirect_url = "../pages/sms.php";
-    $params = [];
-    if (!empty($_POST['contract_id'])) $params[] = "contract_id=" . urlencode($_POST['contract_id']);
-    if (!empty($mod)) $params[] = "mod=" . urlencode($mod);
-
-    if (!empty($params)) {
-        $redirect_url .= "?" . implode("&", $params);
-    }
-    header('location: ' . $redirect_url);
+    header('location: ../pages/sms.php' . $redirect_param);
     exit();
 }
+?>

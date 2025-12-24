@@ -4,12 +4,7 @@ include_once __DIR__ . '/../process/contract_process.php';
 include_once __DIR__ . '/../process/sms_process.php';
 include_once 'header.php';
 
-$is_single_mode = (isset($_GET['mod']) && $_GET['mod'] == 'single') || (isset($_GET['contract_id']) && !empty($_GET['contract_id']));
-$contract_ids = $_GET['contract_ids'] ?? [];
-if (!empty($_GET['contract_id'])) {
-    $contract_ids[] = $_GET['contract_id'];
-}
-$mod = $_GET['mod'] ?? '';
+$is_single_mode = isset($_GET['contract_id']) && !empty($_GET['contract_id']);
 // $holidays = getHolidays(); // Deprecated
 $all_contracts = [];
 $company_info = get_all_company_info($link);
@@ -40,7 +35,7 @@ if (isset($_GET['due_days'])) {
 }
 
 $next_due_date_filter = $_GET['next_due_date'] ?? null;
-$all_contracts = getContractsForSms($link, $selected_due_days, !empty($contract_ids) ? $contract_ids : null, $next_due_date_filter);
+$all_contracts = getContractsForSms($link, $selected_due_days, $is_single_mode ? (int)$_GET['contract_id'] : null, $next_due_date_filter);
 
 $templates_query = mysqli_query($link, "SELECT * FROM sms_templates ORDER BY id ASC");
 $sms_templates = mysqli_fetch_all($templates_query, MYSQLI_ASSOC);
@@ -68,10 +63,6 @@ $sms_templates = mysqli_fetch_all($templates_query, MYSQLI_ASSOC);
             </div>
             <div class="card-body">
                 <form id="sms-filter-form" method="get" action="sms.php">
-                    <input type="hidden" name="mod" value="<?php echo htmlspecialchars($mod); ?>">
-                    <?php if ($is_single_mode): ?>
-                        <input type="hidden" name="contract_id" value="<?php echo htmlspecialchars($_GET['contract_id'] ?? ''); ?>">
-                    <?php endif; ?>
                     <h4>약정일 필터</h4>
                     <?php if (!$is_single_mode): ?>
                         <div id="agreement-day-filter" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 14px; margin-bottom: 10px;">
@@ -148,7 +139,7 @@ $sms_templates = mysqli_fetch_all($templates_query, MYSQLI_ASSOC);
                                 }
                             ?>
                                 <tr <?php echo $row_style; ?> data-category="<?php echo $row_category; ?>">
-                                    <td><input type="checkbox" class="contract-checkbox" name="contract_ids[]" value="<?php echo $c['contract_id']; ?>" data-info='<?php echo json_encode($c, JSON_HEX_APOS); ?>' <?php if ((!empty($contract_ids) && in_array($c['contract_id'], $contract_ids))) echo 'checked'; ?>></td>
+                                    <td><input type="checkbox" class="contract-checkbox" name="contract_ids[]" value="<?php echo $c['contract_id']; ?>" data-info='<?php echo json_encode($c, JSON_HEX_APOS); ?>' <?php if ($is_single_mode && $c['contract_id'] == $_GET['contract_id']) echo 'checked'; ?>></td>
                                     <td style="font-size: 0.75rem;"><?php echo $c['contract_id']; ?></td>
                                     <td><?php echo htmlspecialchars($c['customer_name']); ?></td>
                                     <td class="copy-phone" data-clipboard-text="<?php echo htmlspecialchars($c['customer_phone']); ?>" style="cursor: pointer;" title="클릭하여 복사"><?php echo htmlspecialchars($c['customer_phone']); ?></td>
@@ -226,10 +217,6 @@ $sms_templates = mysqli_fetch_all($templates_query, MYSQLI_ASSOC);
                 <form action="../process/sms_process.php" method="post" id="multi-sms-send-form">
                     <!-- 이 필드는 JS로 채워집니다 -->
                     <input type="hidden" name="bulk_data" id="bulk-sms-data-input">
-                    <input type="hidden" name="mod" value="<?php echo htmlspecialchars($mod); ?>">
-                    <?php if ($is_single_mode): ?>
-                        <input type="hidden" name="contract_id" value="<?php echo htmlspecialchars($_GET['contract_id'] ?? ''); ?>">
-                    <?php endif; ?>
 
                     <div class="form-grid" style="grid-template-columns: 1fr 2fr;">
                         <div class="form-col">
@@ -279,7 +266,6 @@ $sms_templates = mysqli_fetch_all($templates_query, MYSQLI_ASSOC);
                             <form action="../process/sms_process.php" method="post" onsubmit="return confirm('이 템플릿을 삭제하시겠습니까?');" style="flex: 1; margin: 0; display: flex;">
                                 <input type="hidden" name="template_id" value="<?php echo $template['id']; ?>">
                                 <input type="hidden" name="contract_id" value="<?php echo $is_single_mode ? (int)$_GET['contract_id'] : ''; ?>">
-                                <input type="hidden" name="mod" value="<?php echo htmlspecialchars($mod); ?>">
                                 <button type="submit" name="delete_template" class="btn btn-sm btn-danger">삭제</button>
                             </form>
                         </div>
@@ -289,7 +275,6 @@ $sms_templates = mysqli_fetch_all($templates_query, MYSQLI_ASSOC);
                     <div class="sms-template-box" style="height: auto; min-height: 150px; border-style: dashed;">
                         <form action="../process/sms_process.php" method="post">
                             <input type="hidden" name="contract_id" value="<?php echo $is_single_mode ? (int)$_GET['contract_id'] : ''; ?>">
-                            <input type="hidden" name="mod" value="<?php echo htmlspecialchars($mod); ?>">
                             <div class="input-group" style="margin:0; position: relative;">
                                 <label for="new_template_title" style="margin-bottom: 5px;">새 템플릿 추가</label><br>
                                 <input type="text" name="title" id="new_template_title" placeholder="템플릿 제목" class="form-control" style="margin-bottom: 8px;" required><br>
@@ -316,7 +301,6 @@ $sms_templates = mysqli_fetch_all($templates_query, MYSQLI_ASSOC);
         <form action="../process/sms_process.php" method="post" id="template-edit-form">
             <input type="hidden" name="template_id" id="modal-template-id">
             <input type="hidden" name="contract_id" value="<?php echo $is_single_mode ? (int)$_GET['contract_id'] : ''; ?>">
-            <input type="hidden" name="mod" value="<?php echo htmlspecialchars($mod); ?>">
             <div class="form-col" style="margin-bottom: 15px;">
                 <label for="modal-template-title">제목</label>
                 <input type="text" name="title" id="modal-template-title" class="form-control" required>
@@ -559,54 +543,17 @@ $sms_templates = mysqli_fetch_all($templates_query, MYSQLI_ASSOC);
 
                     // 미리보기 UI 생성
                     const previewId = `preview-${contractInfo.contract_id}-${selectedTemplate.value}`;
-                    const phoneInputId = `phone-input-${contractInfo.contract_id}-${selectedTemplate.value}`;
-
                     const box = document.createElement('div');
                     box.className = 'sms-template-box';
-                    box.style.marginBottom = '15px';
-
-                    box.innerHTML = `
-                        <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-                            <label style="font-size: 12px; font-weight: bold; color: #666; margin:0;">To: ${contractInfo.customer_name}</label>
-                            <input type="text" id="${phoneInputId}" class="form-control recipient-phone-input" 
-                                value="${contractInfo.customer_phone}" 
-                                style="width: 140px; height: 28px; font-size: 13px; padding: 2px 8px;"
-                                data-index="${bulkSmsData.length - 1}">
-                        </div>
-                        <p id="${previewId}" style="margin-bottom: 10px; white-space: pre-wrap;">${message}</p>
-                        <button type="button" class="btn btn-secondary copy-btn btn-sm" data-clipboard-target="#${previewId}">복사하기</button>
-                    `;
+                    box.innerHTML = `<p style="font-size: 12px; color: #666; margin-bottom: 5px;"><b>To:</b> ${contractInfo.customer_name} (${contractInfo.customer_phone})</p><p id="${previewId}">${message}</p><button class="btn btn-secondary copy-btn btn-sm" data-clipboard-target="#${previewId}">복사하기</button>`;
                     previewContainer.appendChild(box);
-
-                    // 전화번호 입력 필드 변경 이벤트 리스너 추가
-                    const phoneInput = box.querySelector('.recipient-phone-input');
-                    phoneInput.addEventListener('input', function() {
-                        const index = this.dataset.index;
-                        bulkSmsData[index].phone = this.value;
-
-                        // 숨겨진 필드 값 실시간 업데이트
-                        document.getElementById('bulk-sms-data-input').value = JSON.stringify(bulkSmsData);
-
-                        // 수신자 리스트 요약 업데이트
-                        updateRecipientListSummary(bulkSmsData);
-                    });
                 });
 
-                function updateRecipientListSummary(data) {
-                    const recipientSummaryList = document.getElementById('recipient-list');
-                    if (data.length > 0) {
-                        const html = data.map(item => `<span>${item.name || '알수없음'}(${item.phone})</span>`).join(', ');
-                        recipientSummaryList.innerHTML = html;
-                    } else {
-                        recipientSummaryList.innerHTML = '';
-                    }
-                }
-
-                // 숨겨진 필드에 초기 데이터 설정
+                // 숨겨진 필드에 데이터 설정
                 document.getElementById('bulk-sms-data-input').value = JSON.stringify(bulkSmsData);
                 // 수신자 요약 업데이트
                 document.getElementById('recipient-count').textContent = selectedContracts.length;
-                updateRecipientListSummary(bulkSmsData);
+                recipientSummaryList.innerHTML = recipientHtml.slice(0, -2); // 마지막 콤마 제거
 
                 // Activate Step 4
                 step4Card.classList.add('active');

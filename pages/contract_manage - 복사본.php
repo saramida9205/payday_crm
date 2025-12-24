@@ -161,7 +161,6 @@ if (isset($_GET['edit'])) {
 <div class="page-action-buttons">
     <button id="show_add_form_btn" class="btn btn-success">신규 계약 추가</button>
     <button id="download_selected_btn" class="btn btn-secondary">선택 항목 엑셀 다운로드</button>
-    <button id="bulk_sms_btn" class="btn btn-primary" style="background-color: #6f42c1; border-color: #6f42c1;">SMS 발송하기</button>
     <button id="bulk_classification_btn" class="btn btn-info">구분코드 일괄 적용</button>
     <?php if (isset($_SESSION['permission_level']) && $_SESSION['permission_level'] == 0): ?>
         <div style="display: inline-block; text-align: center;">
@@ -472,24 +471,6 @@ if (isset($_GET['edit'])) {
                     window.location.href = 'download_contracts.php?' + queryParams.toString();
                 } else {
                     alert('다운로드할 계약을 선택해주세요.');
-                }
-            });
-        }
-
-        // --- Bulk SMS Send ---
-        const bulkSmsBtn = document.getElementById('bulk_sms_btn');
-        if (bulkSmsBtn) {
-            bulkSmsBtn.addEventListener('click', function() {
-                const selectedContractIds = Array.from(document.querySelectorAll('.contract_checkbox:checked'))
-                    .map(cb => cb.value);
-
-                if (selectedContractIds.length > 0) {
-                    const queryParams = new URLSearchParams();
-                    selectedContractIds.forEach(id => queryParams.append('contract_ids[]', id));
-                    const url = 'sms.php?' + queryParams.toString();
-                    openPopupAndRefreshParent(url, '_blank', 'width=1400,height=800');
-                } else {
-                    alert('SMS를 발송할 계약을 선택해주세요.');
                 }
             });
         }
