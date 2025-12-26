@@ -42,6 +42,20 @@ if (isset($_GET['due_days'])) {
 $next_due_date_filter = $_GET['next_due_date'] ?? null;
 $all_contracts = getContractsForSms($link, $selected_due_days, !empty($contract_ids) ? $contract_ids : null, $next_due_date_filter);
 
+// --- SMS History Fetching (Single Mode Only) ---
+$sms_history = [];
+if ($is_single_mode && !empty($contract_ids)) {
+    $target_contract_id = $contract_ids[0];
+    $log_sql = "SELECT * FROM sms_log WHERE contract_id = ? ORDER BY id DESC LIMIT 20";
+    if ($stmt = mysqli_prepare($link, $log_sql)) {
+        mysqli_stmt_bind_param($stmt, "i", $target_contract_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $sms_history = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        mysqli_stmt_close($stmt);
+    }
+}
+
 $templates_query = mysqli_query($link, "SELECT * FROM sms_templates ORDER BY id ASC");
 $sms_templates = mysqli_fetch_all($templates_query, MYSQLI_ASSOC);
 
@@ -304,6 +318,63 @@ $sms_templates = mysqli_fetch_all($templates_query, MYSQLI_ASSOC);
             </div>
         </div>
     </details>
+<?php endif; ?>
+
+<?php if ($is_single_mode): ?>
+    <div class="card" style="margin-top: 20px;">
+        <div class="card-header">
+            <h5><i class="fas fa-history"></i> 최근 SMS 발송 이력 (최근 20건)</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" style="font-size: 13px; text-align: center;">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 150px;">발송일시</th>
+                            <th style="width: 120px;">수신번호</th>
+                            <th>내용</th>
+                            <th style="width: 80px;">상태</th>
+                            <th style="width: 120px;">결과</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($sms_history)): ?>
+                            <tr>
+                                <td colspan="5" class="text-center" style="padding: 20px; color: #6c757d;">발송 이력이 없습니다.</td>
+                            </tr>
+                        <?php else: ?>
+                            <?php foreach ($sms_history as $log):
+                                $status_badge = '';
+                                switch ($log['status']) {
+                                    case 'pending':
+                                        $status_badge = '<span class="badge bg-warning text-dark">대기</span>';
+                                        break;
+                                    case 'sent':
+                                        $status_badge = '<span class="badge bg-success">성공</span>';
+                                        break;
+                                    case 'failed':
+                                        $status_badge = '<span class="badge bg-danger">실패</span>';
+                                        break;
+                                    default:
+                                        $status_badge = '<span class="badge bg-secondary">' . htmlspecialchars($log['status']) . '</span>';
+                                }
+                            ?>
+                                <tr>
+                                    <td><?php echo $log['request_time']; ?></td>
+                                    <td><?php echo htmlspecialchars($log['recipient_phone']); ?></td>
+                                    <td class="text-start" title="<?php echo htmlspecialchars($log['message_content']); ?>" style="cursor:help;">
+                                        <?php echo htmlspecialchars(mb_strimwidth($log['message_content'], 0, 80, "...")); ?>
+                                    </td>
+                                    <td><?php echo $status_badge; ?></td>
+                                    <td><?php echo htmlspecialchars($log['api_request_result_msg']); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 <?php endif; ?>
 <!-- Template Edit Modal -->
 
